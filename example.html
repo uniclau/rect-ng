@@ -1,0 +1,121 @@
+<html ng-app="test">
+   <head>
+      <title>rectNG</title>
+      <meta charset="UTF-8">
+      <script src="angular.min.js"></script>
+      <style>
+         body {
+            font-family: "Helvetica Neue";
+            padding: 10px;
+         }
+         pre {
+            background-color: #f4f4f4;
+            border-radius: 3px;
+            width: 50%;
+            overflow-x: auto;
+            padding: 10px;
+         }
+      </style>
+   
+      <script src="rect-ng.js"></script>
+   
+      <script>
+         var app = angular.module("test", ['rectNG']);
+   
+         /////////////////////////////////////
+         // TEST CONTROLLER
+         function Testing($scope) {
+         
+            $scope.tableWidth = "50%";
+            $scope.tableHeight = "200px";
+         
+            // First grid
+            $scope.musicians = [
+               {id: 1, name: "Jay", lname: "Kay", email: "user1@rect-ng.net"},
+               {id: 2, name: "Herbie", lname: "Hancock", email: "user2@rect-ng.net"},
+               {id: 3, name: "James", lname: "Brown", email: "user3@rect-ng.net"},
+               {id: 4, name: "Miles", lname: "Davis", email: "user4@rect-ng.net"},
+               {id: 5, name: "Bill", lname: "Evans", email: "user5@rect-ng.net"},
+               {id: 6, name: "Wayne", lname: "Shorter", email: "user6@rect-ng.net"},
+               {id: 7, name: "Jaco", lname: "Pastorius", email: "user7@rect-ng.net"},
+               {id: 8, name: "John", lname: "Scofield", email: "user8@rect-ng.net"},
+               {id: 9, name: "Joe", lname: "Henderson", email: "user9@rect-ng.net"},
+               {id: 10, name: "Jack", lname: "DeJohnette", email: "user10@rect-ng.net"},
+               {id: 11, name: "John", lname: "Coltrane", email: "user11@rect-ng.net"},
+               {id: 12, name: "Pat", lname: "Metheny", email: "user12@rect-ng.net"},
+               {id: 13, name: "Dave", lname: "Holland", email: "user13@rect-ng.net"},
+               {id: 14, name: "Keith", lname: "Jarret", email: "user14@rect-ng.net"},
+               {id: 15, name: "Roger", lname: "Waters", email: "user15@rect-ng.net"},
+               {id: 16, name: "David", lname: "Gilmour", email: "user16@rect-ng.net"},
+               {id: 17, name: "Syd", lname: "Barret", email: "user17@rect-ng.net"},
+               {id: 18, name: "Richard", lname: "Wright", email: "user18@rect-ng.net"},
+               {id: 19, name: "Nick", lname: "Mason", email: "user19@rect-ng.net"},
+               {id: 20, name: "Bob", lname: "Klose", email: "user20@rect-ng.net"},
+               {id: 21, name: "John", lname: "Lennon", email: "user21@rect-ng.net"},
+               {id: 22, name: "Paul", lname: "McCartney", email: "user22@rect-ng.net"},
+               {id: 23, name: "George", lname: "Harrisson", email: "user23@rect-ng.net"},
+               {id: 24, name: "Ringo", lname: "Starr", email: "user24@rect-ng.net"},
+               {id: 25, name: "Robert", lname: "Plant", email: "user25@rect-ng.net"},
+               {id: 26, name: "Jimmy", lname: "Page", email: "user26@rect-ng.net"},
+               {id: 27, name: "John Paul", lname: "Jones", email: "user27@rect-ng.net"},
+               {id: 28, name: "John", lname: "Bonham", email: "user28@rect-ng.net"},
+               {id: 29, name: "Jimi", lname: "Hendrix", email: "user29@rect-ng.net"},
+               {id: 30, name: "Freddie", lname: "Mercury", email: "user30@rect-ng.net"},
+               {id: 31, name: "Cat", lname: "Stevens", email: "user31@rect-ng.net"},
+               {id: 32, name: "Xavier", lname: "Cugat", email: "user32@rect-ng.net"},
+               {id: 33, name: "Antonio Carlos", lname: "Jobim", email: "user33@rect-ng.net"},
+               {id: 34, name: "João", lname: "Gilberto", email: "user34@rect-ng.net"},
+               {id: 35, name: "Sergio", lname: "Mendes", email: "user35@rect-ng.net"},
+               {id: 36, name: "Astrud", lname: "Gilberto", email: "user36@rect-ng.net"},
+               {id: 37, name: "Stan", lname: "Getz", email: "user37@rect-ng.net"},
+               {id: 38, name: "Pat", lname: "Martino", email: "user38@rect-ng.net"},
+               {id: 39, name: "Tito", lname: "Puente", email: "user39@rect-ng.net"},
+               {id: 40, name: "Quincy", lname: "Jones", email: "user40@rect-ng.net"},
+               {id: 41, name: "Henry", lname: "Mancini", email: "user41@rect-ng.net"},
+               {id: 42, name: "Aretha", lname: "Franklyn", email: "user42@rect-ng.net"},
+               {id: 43, name: "Donna", lname: "Summer", email: "user43@rect-ng.net"},
+            ];
+            $scope.person = [{id: "id", title: "ID"}, 
+                            {id: "name", title: "Name", visible: true}, 
+                            {id: "lname", title: "Last Name", visible: true}, 
+                            {id: "email", title: "Email", visible: true}];
+            $scope.selectedMusicians = [];
+            
+            // Second grid
+            $scope.producers = [{name: "Bob", lname: "Clearmountain", genre: "Pop Rock"},
+                                {name: "Rudy", lname: "Van Gelder", genre: "Jazz"},
+                                {name: "Eddie", lname: "Kramer", genre: "Pop Rock"},
+                                {name: "Chris Lord", lname: "Alge", genre: "Pop Rock"},
+                                {name: "Joe", lname: "Chiccarelli", genre: "Pop"},
+                                {name: "Jon", lname: "Gass", genre: "Pop"},
+                                {name: "Don", lname: "Hahn", genre: "Orchestral"},
+                                {name: "Andy", lname: "Johns", genre: "Pop Rock"},
+                                {name: "Kevin", lname: "Killen", genre: "Pop"},
+                                {name: "Bernie", lname: "Kirsh", genre: "Jazz"},
+                                {name: "David", lname: "Pensado", genre: "Pop"}];
+            $scope.producer = [{id: "name", title: "Nom", visible: true},
+                               {id:"lname", title:"Cognoms", visible: true},
+                               {id:"genre", title:"Genre", visible: true}];
+            $scope.selectedProducers = [];
+         }
+      </script>
+   </head>
+   
+   <body>
+   
+      <!-- EXAMPLE GRIDS -->
+   
+      <div id="test" ng-controller="Testing">
+         <h3>20th century musicians</h3>
+         <rectng columns="person" data="musicians" selected-rows="selectedMusicians" height="tableHeight" width="tableWidth"></rectng>
+         <br/>
+         <pre>$scope.selectedMusicians = {{selectedMusicians}}</pre>
+         <br/>
+         <h3>20th century producers</h3>
+         <rectng columns="producer" data="producers" selected-rows="selectedProducers" height="tableHeight" width="tableWidth"></rectng>
+         <br/>
+         <pre>$scope.selectedProducers = {{selectedProducers}}</pre>
+      </div>
+   
+   </body>
+</html>
