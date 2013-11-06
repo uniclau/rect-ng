@@ -2,7 +2,7 @@
    <head>
       <title>rectNG</title>
       <meta charset="UTF-8">
-      <script src="angular.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
       <style>
          body {
             font-family: "Helvetica Neue";
@@ -108,12 +108,12 @@
       <div id="test" ng-controller="Testing">
          <h3>20th century musicians</h3>
          <rectng columns="person" data="musicians" selected-rows="selectedMusicians" height="tableHeight" width="tableWidth"></rectng>
-         <br/>
+         <h4>Selection:</h4>
          <pre>$scope.selectedMusicians = {{selectedMusicians}}</pre>
          <br/>
          <h3>20th century producers</h3>
          <rectng columns="producer" data="producers" selected-rows="selectedProducers" height="tableHeight" width="tableWidth"></rectng>
-         <br/>
+         <h4>Selection:</h4>
          <pre>$scope.selectedProducers = {{selectedProducers}}</pre>
       </div>
    
