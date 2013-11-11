@@ -28,6 +28,7 @@ angular.module("rectNG", [])
                
                // Multiple selection
                var selected = [], tmp;
+               // Range
                if ($scope.shiftOn) {
                   if ($scope.lastSelectIndex == -1) {
                      for (var i = 0; i < $scope.visibleData.length; i++) {
@@ -52,8 +53,18 @@ angular.module("rectNG", [])
                         selected.push(tmp);
                      }
                   }
+               // Single (un)select
                } else if ($scope.ctrlOn || $scope.metaOn) {
                   $scope.visibleData[index].selected = !$scope.visibleData[index].selected;
+                  
+                  for (var i = 0; i < $scope.visibleData.length; i++) {
+                     if($scope.visibleData[i].selected) {
+                        tmp = rectNG_clone($scope.visibleData[i]); // don't return 'selected'
+                        delete tmp.selected;
+                        selected.push(tmp);
+                     }
+                  }
+               // Select one
                } else {
                   for (var i = 0; i < $scope.visibleData.length; i++) {
                      $scope.visibleData[i].selected = false;
