@@ -6,6 +6,7 @@ angular.module("rectNG", [])
          controller: function ($scope, $element, $attrs) {
 
             // MONITOR THE VALUES BOUND TO THE PARAMETERS
+            // Watch the actual data
             $scope.$watch($attrs.data, function () {
                $scope.$parent.$watch($attrs.data, function () {
                   $scope.data = $scope.$parent.$eval($attrs.data) || [];
@@ -15,6 +16,7 @@ angular.module("rectNG", [])
                $scope.updateVisible();
             });
 
+            // Watch columns
             $scope.$watch($attrs.columns, function () {
                $scope.$parent.$watch($attrs.columns, function () {
                   $scope.columns = $scope.$parent.$eval($attrs.columns) || [];
@@ -22,31 +24,49 @@ angular.module("rectNG", [])
                $scope.columns = $scope.$parent.$eval($attrs.columns) || [];
             });
 
+            // Watch the filter
             $scope.$watch($attrs.filter, function () {
                $scope.$parent.$watch($attrs.filter, function () {
-                  $scope.filter = $scope.$parent.$eval($attrs.filter) || [];
+                  $scope.filter = $scope.$parent.$eval($attrs.filter) || "";
                   $scope.updateVisible();
                });
-               $scope.filter = $scope.$parent.$eval($attrs.filter) || [];
+               $scope.filter = $scope.$parent.$eval($attrs.filter) || "";
                $scope.updateVisible();
             });
 
-            $scope.$watch($attrs.height, function () {
-               $scope.$parent.$watch($attrs.height, function () {
-                  $scope.height = $scope.$parent.$eval($attrs.height) || [];
-               });
-               $scope.height = $scope.$parent.$eval($attrs.height) || [];
+            // Watch the multiselection flag
+            $scope.$watch($attrs.multiselect, function () {
+               $scope.multiselect = ($attrs.multiselect == undefined || $attrs.multiselect == "true");
             });
 
+            // Watch height
+            $scope.$watch($attrs.height, function () {
+               $scope.$parent.$watch($attrs.height, function () {
+                  $scope.height = $scope.$parent.$eval($attrs.height) || $scope.height;
+               });
+               $scope.height = $scope.$parent.$eval($attrs.height) || $scope.height;
+            });
+
+            // Watch width
             $scope.$watch($attrs.width, function () {
                $scope.$parent.$watch($attrs.width, function () {
-                  $scope.width = $scope.$parent.$eval($attrs.width) || [];
+                  $scope.width = $scope.$parent.$eval($attrs.width) || $scope.width;
                });
-               $scope.width = $scope.$parent.$eval($attrs.width) || [];
+               $scope.width = $scope.$parent.$eval($attrs.width) || $scope.width;
             });
 
             // ROW SELECTION
             $scope.cellClick = function (index) {
+               // Single selection
+               if($scope.multiselect == undefined || $scope.multiselect == false) {
+                  for (var i = 0; i < $scope.data.length; i++) {
+                     $scope.data[i].selected = false;
+                  }
+                  $scope.data[index].selected = true;
+                  return;
+               }
+               
+               // Multiple selection
                if ($scope.shiftOn) {
                   if ($scope.lastSelectIndex == -1) {
                      for (var i = 0; i < $scope.data.length; i++) {
@@ -182,6 +202,7 @@ angular.module("rectNG", [])
                $scope.sortAscending = true;
                $scope.lastSortIndex = -1;
                $scope.visibleData = [];
+               $scope.multiselect = true;
             };
          },
          // Not ideal, but in order to keep everything packaged into a single file,

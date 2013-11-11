@@ -50,7 +50,7 @@ Add **rectNG** as a dependency of your Angular application.
 	
 ### More options
 
-##### Selection
+##### Row selection
 
 RectAngular JS allows users to select one or multiple rows by using the Shift, Ctrl and Meta keys. To get the currently selected rows, declare an empty array:
 
@@ -59,6 +59,19 @@ RectAngular JS allows users to select one or multiple rows by using the Shift, C
 And tell rect-ng to use your variable:
 
 	<rectng data="musicians" columns="columns" selected-rows="selectedMusicians"></rectng>
+	
+##### Multiple row selection
+By default, the user can select more than one row at the same time.
+
+	<rectng data="musicians" columns="columns"></rectng>
+	<rectng data="musicians" columns="columns" multiselect="true"></rectng>
+
+The last two tables shoud behave identically.
+
+And of course, you can limit selection to just one row by doing this:
+
+	<rectng data="musicians" columns="columns" multiselect="false"></rectng>
+		
 	
 ##### Filtering
 To display only rows matching a given filter, define a variable in your $scope:
@@ -70,7 +83,6 @@ Tell rectNG to use it.
 	<rectng data="musicians" columns="columns" filter="currentFilter"></rectng>
 	
 Bind the value of an input HTML element to a variable in your scope and see what happens when you type a filter.
-		
 ##### Sizing
 To give your grid a precise size, define two variables in your scope:
 	
