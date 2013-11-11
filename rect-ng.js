@@ -173,7 +173,7 @@ angular.module("rectNG", [])
                }
                else {
                   // Show only rows matching the filter
-                  var pattern = new RegExp($scope.filter);
+                  var pattern = new RegExp($scope.filter, "i");
                   for(var i = 0; i < $scope.data.length; i++) {
                      var rowContent = "";
                      for (var j = 0; j < $scope.columns.length; j++) {
