@@ -5,7 +5,7 @@ angular.module("rectNG", [])
          scope: {},
          controller: function ($scope, $element, $attrs) {
 
-            /* STATE VARIABLES */
+            /* STATE VARIABLES --------------------------------------------- */
             
             $scope.lastSelectIndex = -1;
             $scope.sortAscending = true;
@@ -14,7 +14,7 @@ angular.module("rectNG", [])
             $scope.visibleModel = [];
             $scope.multiselect = true;
             
-            /* EVENT HANDLING */
+            /* EVENT HANDLING ---------------------------------------------- */
             
             // ROW SELECTION HANDLING
             $scope.cellClick = function (index) {
@@ -93,26 +93,12 @@ angular.module("rectNG", [])
                }
             };
 
-            // SELECTION MODIFIERS
+            // HANDLING KEY MODIFIERS
             $scope.onKeyDown = function (e) {
                
                // CTRL + A / CMD + A => Select All
                if((e.metaKey && e.keyCode == 65) || (e.ctrlKey && e.keyCode65) && $scope.multiselect) {
-                  var selected = [], tmp;
-                  for (var i = 0; i < $scope.visibleData.length; i++) {
-                     $scope.visibleData[i].selected = true;
-                     tmp = rectNG_clone($scope.visibleData[i]); // don't return 'selected'
-                     delete tmp.selected;
-                     selected.push(tmp);
-                  }
-                  
-                  // Set the new selection on the parent's variable
-                  if ($attrs.selectedRows && $attrs.selectedRows != "")
-                     $scope.$parent[$attrs.selectedRows] = selected;
-                  $scope.shiftOn = false;
-                  $scope.ctrlOn = false;
-                  $scope.metaOn = false;
-                  $scope.lastSelectIndex = 0;
+                  $scope.selectAll();
                   e.preventDefault();
                   return;
                }
@@ -145,7 +131,7 @@ angular.module("rectNG", [])
                $scope.data.sort(rectNG_sortFunction($scope.visibleModel[index].id, $scope.sortAscending));
                $scope.lastSortIndex = index;
                
-               $scope.updateVisible();
+               $scope.updateVisibleData();
             };
 
             // UPDATE THE COLUMN MODEL
@@ -159,7 +145,7 @@ angular.module("rectNG", [])
             };
 
             // UPDATE THE VISIBLE ROWS
-            $scope.updateVisible = function(){
+            $scope.updateVisibleData = function(){
                $scope.visibleData = [];
                if($scope.filter == undefined || $scope.filter == "") {
                   // Show all rows
@@ -182,7 +168,31 @@ angular.module("rectNG", [])
                }
             };
             
-            /* STATE FUNCTIONS */
+            $scope.selectAll = function(){
+               var selected = [], tmp;
+               // Prompt the parent scope with the new selection
+               if ($attrs.selectedRows && $attrs.selectedRows != "") {
+                  for (var i = 0; i < $scope.visibleData.length; i++) {
+                     $scope.visibleData[i].selected = true;
+                     tmp = rectNG_clone($scope.visibleData[i]);
+                     delete tmp.selected; // don't return 'selected'
+                     selected.push(tmp);
+                  }
+                  // Set the new selection on the parent's variable
+                  $scope.$parent[$attrs.selectedRows] = selected;
+               }
+               else {
+                  for (var i = 0; i < $scope.visibleData.length; i++)
+                     $scope.visibleData[i].selected = true;
+               }
+               
+               $scope.shiftOn = false;
+               $scope.ctrlOn = false;
+               $scope.metaOn = false;
+               $scope.lastSelectIndex = 0;
+            };
+            
+            /* STATE FUNCTIONS --------------------------------------------- */
             
             // ROW SELECTION STATUS
             $scope.isRowSelected = function (index) {
@@ -210,7 +220,7 @@ angular.module("rectNG", [])
                };
             };
             
-            /* PARAMETER WATCHES */
+            /* PARAMETER WATCHES ------------------------------------------- */
             
             // MONITOR THE VALUES BOUND TO THE PARAMETERS
             // Watch the data variable
@@ -219,14 +229,14 @@ angular.module("rectNG", [])
                   $scope.data = $scope.$parent.$eval($attrs.data) || [];
                   // Refresh visible rows
                   if($scope.lastSortIndex == -1)
-                     $scope.updateVisible();
+                     $scope.updateVisibleData();
                   else
                      $scope.sortBy($scope.lastSortIndex);
                });
                $scope.data = $scope.$parent.$eval($attrs.data) || []; // If the variable name changes
                // Refresh visible rows
                if($scope.lastSortIndex == -1)
-                  $scope.updateVisible();
+                  $scope.updateVisibleData();
                else
                   $scope.sortBy($scope.lastSortIndex);
             });
@@ -245,10 +255,10 @@ angular.module("rectNG", [])
             $scope.$watch($attrs.filter, function () {
                $scope.$parent.$watch($attrs.filter, function () {
                   $scope.filter = $scope.$parent.$eval($attrs.filter) || "";
-                  $scope.updateVisible();
+                  $scope.updateVisibleData();
                });
                $scope.filter = $scope.$parent.$eval($attrs.filter) || "";
-               $scope.updateVisible();
+               $scope.updateVisibleData();
             });
 
             // Watch the multiselection flag
@@ -312,8 +322,7 @@ angular.module("rectNG", [])
       };
    });
 
-///////////////////////////////////////////////////////////////////////////////
-// AUXILIARY FUNCTIONS
+/* AUXILIARY FUNCTIONS ----------------------------------------------------- */
 
 // Generic sort function by Triptych @ StackOverflow
 // values.sort(rectNG_sortFunction('price', true, parseInt));
