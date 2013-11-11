@@ -11,6 +11,7 @@ angular.module("rectNG", [])
             $scope.sortAscending = true;
             $scope.lastSortIndex = -1;
             $scope.visibleData = [];
+            $scope.visibleModel = [];
             $scope.multiselect = true;
             
             /* EVENT HANDLING */
@@ -133,43 +134,28 @@ angular.module("rectNG", [])
                   $scope.metaOn = false;
             };
 
-            /* STATE FUNCTIONS */
-            
-            // ROW SELECTION STATUS
-            $scope.isRowSelected = function (index) {
-               return ($scope.visibleData[index].selected ? "rectNG-selected" : "");
-            };
-
-            // VISIBLE MODEL
-            $scope.visibleModel = function () {
-               var ret = [];
-               for (var i = 0; i < $scope.columns.length; i++) {
-                  if ($scope.columns[i].visible == true)
-                     ret.push($scope.columns[i]);
-               }
-               return ret;
-            };
-
-            // DEFAULT COLUMN WIDTH
-            $scope.columnWidth = function () {
-               if ($scope.width.indexOf("%") > 0)
-                  return (100.0 / $scope.visibleModel().length) + "%";
-               else {
-                  var width = parseFloat($scope.width);
-                  return (width / $scope.visibleModel().length) + "px";
-               }
-            };
-
             // SORT BY COLUMN
             $scope.sortBy = function (index) {
+               if(index >= $scope.visibleModel.length)
+                  return;
+               
                if (index == $scope.lastSortIndex)
                   $scope.sortAscending = !$scope.sortAscending;
 
-               var m = $scope.visibleModel();
-               $scope.data.sort(rectNG_sortFunction(m[index].id, $scope.sortAscending));
+               $scope.data.sort(rectNG_sortFunction($scope.visibleModel[index].id, $scope.sortAscending));
                $scope.lastSortIndex = index;
                
                $scope.updateVisible();
+            };
+
+            // UPDATE THE COLUMN MODEL
+            $scope.updateVisibleModel = function () {
+               var model = [];
+               for (var i = 0; i < $scope.columns.length; i++) {
+                  if ($scope.columns[i].visible == true)
+                     model.push($scope.columns[i]);
+               }
+               $scope.visibleModel = model;
             };
 
             // UPDATE THE VISIBLE ROWS
@@ -196,6 +182,23 @@ angular.module("rectNG", [])
                }
             };
             
+            /* STATE FUNCTIONS */
+            
+            // ROW SELECTION STATUS
+            $scope.isRowSelected = function (index) {
+               return ($scope.visibleData[index].selected ? "rectNG-selected" : "");
+            };
+
+            // DEFAULT COLUMN WIDTH
+            $scope.columnWidth = function () {
+               if ($scope.width.indexOf("%") > 0)
+                  return (100.0 / $scope.visibleModel.length) + "%";
+               else {
+                  var width = parseFloat($scope.width);
+                  return (width / $scope.visibleModel.length) + "px";
+               }
+            };
+
             // INIT
             $scope.init = function () {
                var rectNGs = document.getElementsByClassName('rectNG');
@@ -232,8 +235,10 @@ angular.module("rectNG", [])
             $scope.$watch($attrs.columns, function () {
                $scope.$parent.$watch($attrs.columns, function () {// If the content changes
                   $scope.columns = $scope.$parent.$eval($attrs.columns) || [];
+                  $scope.updateVisibleModel();
                });
                $scope.columns = $scope.$parent.$eval($attrs.columns) || []; // If the variable name changes
+               $scope.updateVisibleModel();
             });
 
             // Watch the filter variable
@@ -292,13 +297,13 @@ angular.module("rectNG", [])
             <div class="rectNG" tabindex="10000" style="width: {{width}}; height: {{height}};" ng-init="init()">\
                <div class="rectNG-head">\
                   <div>\
-                     <div class="rectNG-title" ng-repeat="c in visibleModel()" style="width: {{columnWidth()}};" ng-click="sortBy($index)">{{c.title}} <span ng-show="lastSortIndex==$index && sortAscending">&darr;</span><span ng-show="lastSortIndex==$index && !sortAscending">&uarr;</span></div>\
+                     <div class="rectNG-title" ng-repeat="c in visibleModel" style="width: {{columnWidth()}};" ng-click="sortBy($index)">{{c.title}} <span ng-show="lastSortIndex==$index && sortAscending">&darr;</span><span ng-show="lastSortIndex==$index && !sortAscending">&uarr;</span></div>\
                   </div>\
                </div>\
                <div class="rectNG-body">\
                   <div class="rectNG-inner">\
                      <div class="rectNG-row" ng-repeat="row in visibleData" ng-click="cellClick($index)" ng-class="isRowSelected($index)">\
-                        <div class="rectNG-cell" ng-repeat="c in visibleModel()" style="width: {{columnWidth()}};">{{row[c.id]}}</div>\
+                        <div class="rectNG-cell" ng-repeat="c in visibleModel" style="width: {{columnWidth()}};">{{row[c.id]}}</div>\
                      </div>\
                   </div>\
                </div>\
@@ -321,7 +326,6 @@ function rectNG_sortFunction(field, reverse, compareFunction) {
          function (x) {
             return x[field]
       };
-
    reverse = [-1, 1][+ !! reverse];
 
    return function (a, b) {
