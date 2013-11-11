@@ -5,6 +5,166 @@ angular.module("rectNG", [])
          scope: {},
          controller: function ($scope, $element, $attrs) {
 
+            // ROW SELECTION
+            $scope.cellClick = function (index) {
+               // Single selection
+               if($scope.multiselect == undefined || $scope.multiselect == false) {
+                  for (var i = 0; i < $scope.visibleData.length; i++) {
+                     $scope.visibleData[i].selected = false;
+                  }
+                  $scope.visibleData[index].selected = true;
+                  
+                  // Update the parent's selected rows variable
+                  if ($attrs.selectedRows && $attrs.selectedRows != "")
+                     $scope.$parent[$attrs.selectedRows] = [$scope.visibleData[index]];
+                  return;
+               }
+               
+               // Multiple selection
+               if ($scope.shiftOn) {
+                  if ($scope.lastSelectIndex == -1) {
+                     for (var i = 0; i < $scope.visibleData.length; i++) {
+                        $scope.visibleData[i].selected = false;
+                     }
+                     $scope.visibleData[index].selected = true;
+                  } else if (index > $scope.lastSelectIndex) { // Range
+                     for (var i = $scope.lastSelectIndex; i <= index; i++) {
+                        $scope.visibleData[i].selected = true;
+                     }
+                  } else { // Range
+                     for (var i = index; i <= $scope.lastSelectIndex; i++) {
+                        $scope.visibleData[i].selected = true;
+                     }
+                  }
+               } else if ($scope.ctrlOn || $scope.metaOn) {
+                  $scope.visibleData[index].selected = !$scope.visibleData[index].selected;
+               } else {
+                  for (var i = 0; i < $scope.visibleData.length; i++) {
+                     $scope.visibleData[i].selected = false;
+                  }
+                  $scope.visibleData[index].selected = true;
+               }
+               $scope.lastSelectIndex = index;
+
+               // Update the parent's selected rows variable
+               var selected = [],
+                  tmp;
+               for (var i = 0; i < $scope.visibleData.length; i++) {
+                  if ($scope.visibleData[i].selected) {
+                     tmp = rectNG_clone($scope.visibleData[i]); // don't return 'selected'
+                     delete tmp.selected;
+                     selected.push(tmp);
+                  }
+               }
+               if ($attrs.selectedRows && $attrs.selectedRows != "")
+                  $scope.$parent[$attrs.selectedRows] = selected;
+            };
+
+            // ROW SELECTION STATUS
+            $scope.isRowSelected = function (index) {
+               return ($scope.visibleData[index].selected ? "rectNG-selected" : "");
+            };
+
+            // VISIBLE MODEL
+            $scope.visibleModel = function () {
+               var ret = [];
+               for (var i = 0; i < $scope.columns.length; i++) {
+                  if ($scope.columns[i].visible == true)
+                     ret.push($scope.columns[i]);
+               }
+               return ret;
+            };
+
+            // COLUMN DEFAULT WIDTH
+            $scope.columnWidth = function () {
+               if ($scope.width.indexOf("%") > 0)
+                  return (100.0 / $scope.visibleModel().length) + "%";
+               else {
+                  var width = parseFloat($scope.width);
+                  return (width / $scope.visibleModel().length) + "px";
+               }
+            };
+
+            // SELECTION MODIFIERS
+            $scope.onKeyDown = function (e) {
+               if((e.metaKey && e.keyCode == 65) || (e.ctrlKey && e.keyCode65)) {
+                  for (var i = 0; i < $scope.visibleData.length; i++) {
+                     $scope.visibleData[i].selected = true;
+                  }
+                  e.preventDefault();
+                  return;
+               }
+               
+               if (e.shiftKey)
+                  $scope.shiftOn = true;
+               else
+                  $scope.shiftOn = false;
+
+               if (e.ctrlKey)
+                  $scope.ctrlOn = true;
+               else
+                  $scope.ctrlOn = false;
+
+               if (e.metaKey)
+                  $scope.metaOn = true;
+               else
+                  $scope.metaOn = false;
+            };
+
+            // Sort by column
+            $scope.sortBy = function (index) {
+               if (index == $scope.lastSortIndex)
+                  $scope.sortAscending = !$scope.sortAscending;
+
+               var m = $scope.visibleModel();
+               $scope.data.sort(rectNG_sortFunction(m[index].id, $scope.sortAscending));
+               $scope.lastSortIndex = index;
+               
+               $scope.updateVisible();
+            };
+
+            $scope.updateVisible = function(){
+               $scope.visibleData = [];
+               if($scope.filter == undefined || $scope.filter == "") {
+                  // Show all rows
+                  for(var i = 0; i < $scope.data.length; i++) {
+                     $scope.visibleData.push($scope.data[i]);
+                  }
+               }
+               else {
+                  // Show only rows matching the filter
+                  var pattern = new RegExp($scope.filter, "i");
+                  for(var i = 0; i < $scope.data.length; i++) {
+                     var rowContent = "";
+                     for (var j = 0; j < $scope.columns.length; j++) {
+                        rowContent += $scope.data[i][$scope.columns[j].id] + " ";
+                     }
+                     
+                     if(pattern.test(rowContent))
+                        $scope.visibleData.push($scope.data[i]);
+                  }
+               }
+            };
+            
+            // INIT
+            $scope.init = function () {
+               var rectNGs = document.getElementsByClassName('rectNG');
+               for (var i = 0; i < rectNGs.length; i++) {
+                  rectNGs[i].onkeydown = rectNG_keyChange;
+                  rectNGs[i].onkeyup = rectNG_keyChange;
+                  rectNGs[i].onkeypress = rectNG_keyChange;
+               };
+
+               $scope.ctrlOn = false;
+               $scope.shiftOn = false;
+               $scope.metaOn = false;
+               $scope.lastSelectIndex = -1;
+               $scope.sortAscending = true;
+               $scope.lastSortIndex = -1;
+               $scope.visibleData = [];
+               $scope.multiselect = true;
+            };
+            
             // MONITOR THE VALUES BOUND TO THE PARAMETERS
             // Watch the actual data
             $scope.$watch($attrs.data, function () {
@@ -54,156 +214,6 @@ angular.module("rectNG", [])
                });
                $scope.width = $scope.$parent.$eval($attrs.width) || $scope.width;
             });
-
-            // ROW SELECTION
-            $scope.cellClick = function (index) {
-               // Single selection
-               if($scope.multiselect == undefined || $scope.multiselect == false) {
-                  for (var i = 0; i < $scope.data.length; i++) {
-                     $scope.data[i].selected = false;
-                  }
-                  $scope.data[index].selected = true;
-                  return;
-               }
-               
-               // Multiple selection
-               if ($scope.shiftOn) {
-                  if ($scope.lastSelectIndex == -1) {
-                     for (var i = 0; i < $scope.data.length; i++) {
-                        $scope.data[i].selected = false;
-                     }
-                     $scope.data[index].selected = true;
-                  } else if (index > $scope.lastSelectIndex) { // Range
-                     for (var i = $scope.lastSelectIndex; i <= index; i++) {
-                        $scope.data[i].selected = true;
-                     }
-                  } else { // Range
-                     for (var i = index; i <= $scope.lastSelectIndex; i++) {
-                        $scope.data[i].selected = true;
-                     }
-                  }
-               } else if ($scope.ctrlOn || $scope.metaOn) {
-                  $scope.data[index].selected = !$scope.data[index].selected;
-               } else {
-                  for (var i = 0; i < $scope.data.length; i++) {
-                     $scope.data[i].selected = false;
-                  }
-                  $scope.data[index].selected = true;
-               }
-               $scope.lastSelectIndex = index;
-
-               // Update the parent's selected rows variable
-               var selected = [],
-                  tmp;
-               for (var i = 0; i < $scope.data.length; i++) {
-                  if ($scope.data[i].selected) {
-                     tmp = rectNG_clone($scope.data[i]); // don't return 'selected'
-                     delete tmp.selected;
-                     selected.push(tmp);
-                  }
-               }
-               if ($attrs.selectedRows && $attrs.selectedRows != "")
-                  $scope.$parent[$attrs.selectedRows] = selected;
-            };
-
-            // ROW SELECTION STATUS
-            $scope.isRowSelected = function (index) {
-               return ($scope.data[index].selected ? "rectNG-selected" : "");
-            };
-
-            // VISIBLE MODEL
-            $scope.visibleModel = function () {
-               var ret = [];
-               for (var i = 0; i < $scope.columns.length; i++) {
-                  if ($scope.columns[i].visible == true)
-                     ret.push($scope.columns[i]);
-               }
-               return ret;
-            };
-
-            // COLUMN DEFAULT WIDTH
-            $scope.columnWidth = function () {
-               if ($scope.width.indexOf("%") > 0)
-                  return (100.0 / $scope.visibleModel().length) + "%";
-               else {
-                  var width = parseFloat($scope.width);
-                  return (width / $scope.visibleModel().length) + "px";
-               }
-            };
-
-            // SELECTION MODIFIERS
-            $scope.onKeyDown = function (e) {
-               if (e.shiftKey)
-                  $scope.shiftOn = true;
-               else
-                  $scope.shiftOn = false;
-
-               if (e.ctrlKey)
-                  $scope.ctrlOn = true;
-               else
-                  $scope.ctrlOn = false;
-
-               if (e.metaKey)
-                  $scope.metaOn = true;
-               else
-                  $scope.metaOn = false;
-            };
-
-            // Sort by column
-            $scope.sortBy = function (index) {
-
-               if (index == $scope.lastSortIndex)
-                  $scope.sortAscending = !$scope.sortAscending;
-
-               var m = $scope.visibleModel();
-               $scope.data.sort(rectNG_sortFunction(m[index].id, $scope.sortAscending));
-               $scope.lastSortIndex = index;
-               
-               $scope.updateVisible();
-            };
-
-            $scope.updateVisible = function(){
-               
-               $scope.visibleData = [];
-               if($scope.filter == undefined || $scope.filter == "") {
-                  // Show all rows
-                  for(var i = 0; i < $scope.data.length; i++) {
-                     $scope.visibleData.push($scope.data[i]);
-                  }
-               }
-               else {
-                  // Show only rows matching the filter
-                  var pattern = new RegExp($scope.filter, "i");
-                  for(var i = 0; i < $scope.data.length; i++) {
-                     var rowContent = "";
-                     for (var j = 0; j < $scope.columns.length; j++) {
-                        rowContent += $scope.data[i][$scope.columns[j].id] + " ";
-                     }
-                     
-                     if(pattern.test(rowContent))
-                        $scope.visibleData.push($scope.data[i]);
-                  }
-               }
-            };
-            
-            // INIT
-            $scope.init = function () {
-               var rectNGs = document.getElementsByClassName('rectNG');
-               for (var i = 0; i < rectNGs.length; i++) {
-                  rectNGs[i].onkeydown = rectNG_keyChange;
-                  rectNGs[i].onkeyup = rectNG_keyChange;
-                  rectNGs[i].onkeypress = rectNG_keyChange;
-               };
-
-               $scope.ctrlOn = false;
-               $scope.shiftOn = false;
-               $scope.metaOn = false;
-               $scope.lastSelectIndex = -1;
-               $scope.sortAscending = true;
-               $scope.lastSortIndex = -1;
-               $scope.visibleData = [];
-               $scope.multiselect = true;
-            };
          },
          // Not ideal, but in order to keep everything packaged into a single file,
          // the CSS code is also embedded in the template
