@@ -7,33 +7,49 @@ angular.module("rectNG", [])
 
             // ROW SELECTION
             $scope.cellClick = function (index) {
+               
                // Single selection
                if($scope.multiselect == undefined || $scope.multiselect == false) {
                   for (var i = 0; i < $scope.visibleData.length; i++) {
                      $scope.visibleData[i].selected = false;
                   }
                   $scope.visibleData[index].selected = true;
+                  $scope.lastSelectIndex = index;
                   
                   // Update the parent's selected rows variable
+                  var selected = [], tmp;
+                  tmp = rectNG_clone($scope.visibleData[index]); // don't return 'selected'
+                  delete tmp.selected;
+                  selected.push(tmp);
                   if ($attrs.selectedRows && $attrs.selectedRows != "")
                      $scope.$parent[$attrs.selectedRows] = [$scope.visibleData[index]];
                   return;
                }
                
                // Multiple selection
+               var selected = [], tmp;
                if ($scope.shiftOn) {
                   if ($scope.lastSelectIndex == -1) {
                      for (var i = 0; i < $scope.visibleData.length; i++) {
                         $scope.visibleData[i].selected = false;
                      }
                      $scope.visibleData[index].selected = true;
+                     tmp = rectNG_clone($scope.visibleData[i]); // don't return 'selected'
+                     delete tmp.selected;
+                     selected.push(tmp);
                   } else if (index > $scope.lastSelectIndex) { // Range
                      for (var i = $scope.lastSelectIndex; i <= index; i++) {
                         $scope.visibleData[i].selected = true;
+                        tmp = rectNG_clone($scope.visibleData[i]); // don't return 'selected'
+                        delete tmp.selected;
+                        selected.push(tmp);
                      }
                   } else { // Range
                      for (var i = index; i <= $scope.lastSelectIndex; i++) {
                         $scope.visibleData[i].selected = true;
+                        tmp = rectNG_clone($scope.visibleData[i]); // don't return 'selected'
+                        delete tmp.selected;
+                        selected.push(tmp);
                      }
                   }
                } else if ($scope.ctrlOn || $scope.metaOn) {
@@ -43,21 +59,16 @@ angular.module("rectNG", [])
                      $scope.visibleData[i].selected = false;
                   }
                   $scope.visibleData[index].selected = true;
+                  tmp = rectNG_clone($scope.visibleData[index]); // don't return 'selected'
+                  delete tmp.selected;
+                  selected.push(tmp);
                }
                $scope.lastSelectIndex = index;
 
                // Update the parent's selected rows variable
-               var selected = [],
-                  tmp;
-               for (var i = 0; i < $scope.visibleData.length; i++) {
-                  if ($scope.visibleData[i].selected) {
-                     tmp = rectNG_clone($scope.visibleData[i]); // don't return 'selected'
-                     delete tmp.selected;
-                     selected.push(tmp);
-                  }
-               }
-               if ($attrs.selectedRows && $attrs.selectedRows != "")
+               if ($attrs.selectedRows && $attrs.selectedRows != ""){
                   $scope.$parent[$attrs.selectedRows] = selected;
+               }
             };
 
             // ROW SELECTION STATUS
@@ -87,14 +98,29 @@ angular.module("rectNG", [])
 
             // SELECTION MODIFIERS
             $scope.onKeyDown = function (e) {
-               if((e.metaKey && e.keyCode == 65) || (e.ctrlKey && e.keyCode65)) {
+               
+               // CTRL + A / CMD + A => Select All
+               if((e.metaKey && e.keyCode == 65) || (e.ctrlKey && e.keyCode65) && $scope.multiselect) {
+                  var selected = [], tmp;
                   for (var i = 0; i < $scope.visibleData.length; i++) {
                      $scope.visibleData[i].selected = true;
+                     tmp = rectNG_clone($scope.visibleData[i]); // don't return 'selected'
+                     delete tmp.selected;
+                     selected.push(tmp);
                   }
+                  
+                  // Set the new selection on the parent's variable
+                  if ($attrs.selectedRows && $attrs.selectedRows != "")
+                     $scope.$parent[$attrs.selectedRows] = selected;
+                  $scope.shiftOn = false;
+                  $scope.ctrlOn = false;
+                  $scope.metaOn = false;
+                  $scope.lastSelectIndex = 0;
                   e.preventDefault();
                   return;
                }
                
+               // Update the internal status variables
                if (e.shiftKey)
                   $scope.shiftOn = true;
                else
@@ -273,7 +299,15 @@ function rectNG_sortFunction(field, reverse, compareFunction) {
    reverse = [-1, 1][+ !! reverse];
 
    return function (a, b) {
-      return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+      var a = key(a), b = key(b);
+      if(!a && !b)
+         return 0;
+      else if(!a)
+         return reverse;
+      else if(!b)
+         return -reverse;
+      
+      return reverse * ((a > b) - (b > a));
    };
 }
 
