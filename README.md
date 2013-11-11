@@ -26,7 +26,7 @@ Integrating rect-ng in your angular application can't be simpler.
 
 ##### Tell angular to use it
 
-Add **regtNG** as a dependency of your Angular application.
+Add **rectNG** as a dependency of your Angular application.
 
 	var app = angular.module("test", ['rectNG']);
 
@@ -52,7 +52,7 @@ Add **regtNG** as a dependency of your Angular application.
 
 ##### Selection
 
-RectAngular JS allows to select one or multiple rows by using the Shift, Ctrl and Meta keys. To get the currently selected rows, declare an empty array:
+RectAngular JS allows users to select one or multiple rows by using the Shift, Ctrl and Meta keys. To get the currently selected rows, declare an empty array:
 
 	$scope.selectedMusicians = [];
 	
@@ -60,13 +60,24 @@ And tell rect-ng to use your variable:
 
 	<rectng data="musicians" columns="columns" selected-rows="selectedMusicians"></rectng>
 	
+##### Filtering
+To display only rows matching a given filter, define a variable in your $scope:
+	
+	$scope.currentfilter = "";
+
+Tell rectNG to use it.
+
+	<rectng data="musicians" columns="columns" filter="currentFilter"></rectng>
+	
+Bind the value of an input HTML element to a variable in your scope and see what happens when you type a filter.
+		
 ##### Sizing
 To give your grid a precise size, define two variables in your scope:
 	
 	$scope.tableWidth = "50%";
     $scope.tableHeight = "200px";
 
-Both percentage and pixel units are accepted.
+Both percentage and pixel units are supported.
 
 Tell rect-ng to use them to resize itself.
 

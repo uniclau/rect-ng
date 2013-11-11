@@ -9,8 +9,10 @@ angular.module("rectNG", [])
             $scope.$watch($attrs.data, function () {
                $scope.$parent.$watch($attrs.data, function () {
                   $scope.data = $scope.$parent.$eval($attrs.data) || [];
+                  $scope.updateVisible();
                });
                $scope.data = $scope.$parent.$eval($attrs.data) || [];
+               $scope.updateVisible();
             });
 
             $scope.$watch($attrs.columns, function () {
@@ -18,6 +20,15 @@ angular.module("rectNG", [])
                   $scope.columns = $scope.$parent.$eval($attrs.columns) || [];
                });
                $scope.columns = $scope.$parent.$eval($attrs.columns) || [];
+            });
+
+            $scope.$watch($attrs.filter, function () {
+               $scope.$parent.$watch($attrs.filter, function () {
+                  $scope.filter = $scope.$parent.$eval($attrs.filter) || [];
+                  $scope.updateVisible();
+               });
+               $scope.filter = $scope.$parent.$eval($attrs.filter) || [];
+               $scope.updateVisible();
             });
 
             $scope.$watch($attrs.height, function () {
@@ -127,8 +138,34 @@ angular.module("rectNG", [])
                var m = $scope.visibleModel();
                $scope.data.sort(rectNG_sortFunction(m[index].id, $scope.sortAscending));
                $scope.lastSortIndex = index;
+               
+               $scope.updateVisible();
             };
 
+            $scope.updateVisible = function(){
+               
+               $scope.visibleData = [];
+               if($scope.filter == undefined || $scope.filter == "") {
+                  // Show all rows
+                  for(var i = 0; i < $scope.data.length; i++) {
+                     $scope.visibleData.push($scope.data[i]);
+                  }
+               }
+               else {
+                  // Show only rows matching the filter
+                  var pattern = new RegExp($scope.filter);
+                  for(var i = 0; i < $scope.data.length; i++) {
+                     var rowContent = "";
+                     for (var j = 0; j < $scope.columns.length; j++) {
+                        rowContent += $scope.data[i][$scope.columns[j].id] + " ";
+                     }
+                     
+                     if(pattern.test(rowContent))
+                        $scope.visibleData.push($scope.data[i]);
+                  }
+               }
+            };
+            
             // INIT
             $scope.init = function () {
                var rectNGs = document.getElementsByClassName('rectNG');
@@ -144,10 +181,11 @@ angular.module("rectNG", [])
                $scope.lastSelectIndex = -1;
                $scope.sortAscending = true;
                $scope.lastSortIndex = -1;
-            }
+               $scope.visibleData = [];
+            };
          },
          // Not ideal, but in order to keep everything packaged into a single file,
-         // the CSS code is embedded in the template
+         // the CSS code is also embedded in the template
          template: '<div>\
             <style>\
               .rectNG {margin: 0;padding: 0 0 39px;display: block;outline: none;user-select: none;-ms-user-select: none;-moz-user-select: none;-webkit-user-select: none;}\
@@ -175,7 +213,7 @@ angular.module("rectNG", [])
                      </div>\
                      <div class="rectNG-body">\
                         <div class="rectNG-inner">\
-                           <div class="rectNG-row" ng-repeat="row in data" ng-click="cellClick($index)" ng-class="isRowSelected($index)">\
+                           <div class="rectNG-row" ng-repeat="row in visibleData" ng-click="cellClick($index)" ng-class="isRowSelected($index)">\
                               <div class="rectNG-cell" ng-repeat="c in visibleModel()" style="width: {{columnWidth()}};">{{row[c.id]}}</div>\
                            </div>\
                         </div>\
