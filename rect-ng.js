@@ -94,11 +94,11 @@ angular.module("rectNG", [])
             };
 
             // SORT BY COLUMN
-            $scope.sortBy = function (index) {
+            $scope.sortBy = function (index, keepDirection) {
                if(index >= $scope.visibleModel.length)
                   return;
                
-               if (index == $scope.lastSortIndex)
+               if (index == $scope.lastSortIndex && (!keepDirection))
                   $scope.sortAscending = !$scope.sortAscending;
 
                $scope.data.sort($scope.sortFunction($scope.visibleModel[index].id, $scope.sortAscending));
@@ -241,15 +241,17 @@ angular.module("rectNG", [])
                   // Refresh visible rows
                   if($scope.lastSortIndex == -1)
                      $scope.updateVisibleData();
-                  else
-                     $scope.sortBy($scope.lastSortIndex);
+                  else {
+                     $scope.sortBy($scope.lastSortIndex, true);
+                  }
                });
                $scope.data = $scope.$parent.$eval($attrs.data) || []; // If the variable name changes
                // Refresh visible rows
                if($scope.lastSortIndex == -1)
                   $scope.updateVisibleData();
-               else
-                  $scope.sortBy($scope.lastSortIndex);
+               else {
+                  $scope.sortBy($scope.lastSortIndex, true);
+               }
             });
 
             // Watch the columns variable
@@ -318,7 +320,7 @@ angular.module("rectNG", [])
             <div class="rectNG" tabindex="10000" style="width: {{width}}; height: {{height}};" ng-init="init()">\
                <div class="rectNG-head">\
                   <div>\
-                     <div class="rectNG-title" ng-repeat="c in visibleModel" style="width: {{columnWidth()}};" ng-click="sortBy($index, $event)">{{c.title}} <span ng-show="lastSortIndex==$index && sortAscending">&darr;</span><span ng-show="lastSortIndex==$index && !sortAscending">&uarr;</span></div>\
+                     <div class="rectNG-title" ng-repeat="c in visibleModel" style="width: {{columnWidth()}};" ng-click="sortBy($index)">{{c.title}} <span ng-show="lastSortIndex==$index && sortAscending">&darr;</span><span ng-show="lastSortIndex==$index && !sortAscending">&uarr;</span></div>\
                   </div>\
                </div>\
                <div class="rectNG-body">\
