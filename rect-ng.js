@@ -115,7 +115,7 @@ angular.module("rectNG", [])
             $scope.updateVisibleModel = function () {
                var model = [];
                for (var i = 0; i < $scope.columns.length; i++) {
-                  if ($scope.columns[i].visible == true)
+                  if ($scope.columns[i].visible === undefined || $scope.columns[i].visible === true)
                      model.push($scope.columns[i]);
                }
                $scope.visibleModel = model;
@@ -351,7 +351,7 @@ angular.module("rectNG", [])
               /* Header */\
               .rectNG > div.rectNG-head {display: table;width: 100%;border-bottom: 2px solid #ccc;}\
               .rectNG > div.rectNG-head > div:first-child {display: table-row;height: 38px;cursor: pointer;}\
-              .rectNG-title {display: table-cell;font-weight: bold;vertical-align: middle;padding: 3px 6px;}\
+              .rectNG-title {display: table-cell;color:#555;font-size: 16px;font-weight: bold;vertical-align: middle;padding: 3px 6px;}\
               /* Body */\
               .rectNG > .rectNG-body {width: 100%;height: 100%;overflow: auto;display: block;}\
               .rectNG > .rectNG-body > .rectNG-inner{display: table;width: 100%;}\
