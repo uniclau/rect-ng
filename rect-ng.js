@@ -90,8 +90,8 @@ angular.module("rectNG", [])
                $scope.lastSelectIndex = index;
 
                // Update the parent's selected rows variable
-               if ($attrs.selectedRows && $attrs.selectedRows != "") {
-                  $scope.$parent[$attrs.selectedRows] = selected;
+               if ($attrs.selectedRows) {
+                 eval('$scope.$parent.' + $attrs.selectedRows + "=" + JSON.stringify(selected))
                }
             };
 
