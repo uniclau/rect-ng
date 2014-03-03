@@ -145,6 +145,9 @@ angular.module("rectNG", [])
                  };
 
                  $scope.selectAll = function() {
+                    if(!$scope.multiselect)
+                      return;
+
                     var selected = [],
                             tmp;
                     // Prompt the parent scope with the new selection
@@ -166,6 +169,9 @@ angular.module("rectNG", [])
                  };
 
                  $scope.selectNone = function() {
+                    if(!$scope.multiselect)
+                      return;
+                    
                     for (var i = 0; i < $scope.visibleData.length; i++) {
                         $scope.visibleData[i].selected = false;
                     }
@@ -221,7 +227,7 @@ angular.module("rectNG", [])
                      return;
                 
                    // CTRL + A / CMD + A => Select All
-                   if ((e.metaKey && e.keyCode == 65) || ((e.ctrlKey && e.keyCode65) && $scope.multiselect)) {
+                   if ((e.metaKey && e.keyCode == 65) || ((e.ctrlKey && e.keyCode65))) {
                       $scope.selectAll();
                       e.preventDefault();
                    }
@@ -265,7 +271,7 @@ angular.module("rectNG", [])
                   $scope.visibleData[index].selected = true;
 
                   // Set the new selection on the parent's variable
-                  if ($attrs.selectedRows && $attrs.selectedRows != "") {
+                  if ($attrs.selectedRows) {
                      var tmp = $scope.cloneObj($scope.visibleData[$scope.lastSelectIndex]);
                      delete tmp.selected; // don't return 'selected'
                      $scope.$parent[$attrs.selectedRows] = [tmp];
@@ -319,8 +325,8 @@ angular.module("rectNG", [])
                     reverse = [-1, 1][+!!reverse];
 
                     return function(a, b) {
-                       var a = key(a),
-                               b = key(b);
+                       a = key(a);
+                       b = key(b);
                        if (!a && !b)
                           return 0;
                        else if (!a)
