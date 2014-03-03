@@ -165,25 +165,33 @@ angular.module("rectNG", [])
                     $scope.lastSelectIndex = 0;
                  };
 
+                 $scope.selectNone = function() {
+                    for (var i = 0; i < $scope.visibleData.length; i++) {
+                        $scope.visibleData[i].selected = false;
+                    }
+                    // Set the new selection on the parent's variable
+                    if ($attrs.selectedRows && $attrs.selectedRows != "") {
+                       $scope.$parent[$attrs.selectedRows] = [];
+                    }
+
+                    $scope.lastSelectIndex = 0;
+                 };
+
                  $scope.keyUp = function() {
                     if ($scope.lastSelectIndex > 0)
                        $scope.lastSelectIndex--;
                     else
                        $scope.lastSelectIndex = 0;
 
-                    // Prompt the parent scope with the new selection
+                    for (var i = 0; i < $scope.visibleData.length; i++)
+                      $scope.visibleData[i].selected = false;
+                    $scope.visibleData[$scope.lastSelectIndex].selected = true;
+
+                    // Set the new selection on the parent's variable 
                     if ($attrs.selectedRows && $attrs.selectedRows != "") {
-                       for (var i = 0; i < $scope.visibleData.length; i++)
-                          $scope.visibleData[i].selected = false;
-                       $scope.visibleData[$scope.lastSelectIndex].selected = true;
-                       // Set the new selection on the parent's variable
                        var tmp = $scope.cloneObj($scope.visibleData[$scope.lastSelectIndex]);
                        delete tmp.selected; // don't return 'selected'
                        $scope.$parent[$attrs.selectedRows] = [tmp];
-                    } else {
-                       for (var i = 0; i < $scope.visibleData.length; i++)
-                          $scope.visibleData[i].selected = false;
-                       $scope.visibleData[$scope.lastSelectIndex].selected == true;
                     }
                  };
 
@@ -193,19 +201,15 @@ angular.module("rectNG", [])
                     else
                        $scope.lastSelectIndex = $scope.visibleData.length - 1;
 
-                    // Prompt the parent scope with the new selection
+                    for (var i = 0; i < $scope.visibleData.length; i++)
+                        $scope.visibleData[i].selected = false;
+                    $scope.visibleData[$scope.lastSelectIndex].selected = true;
+
+                    // Set the new selection on the parent's variable
                     if ($attrs.selectedRows && $attrs.selectedRows != "") {
-                       for (var i = 0; i < $scope.visibleData.length; i++)
-                          $scope.visibleData[i].selected = false;
-                       $scope.visibleData[$scope.lastSelectIndex].selected = true;
-                       // Set the new selection on the parent's variable
                        var tmp = $scope.cloneObj($scope.visibleData[$scope.lastSelectIndex]);
                        delete tmp.selected; // don't return 'selected'
                        $scope.$parent[$attrs.selectedRows] = [tmp];
-                    } else {
-                       for (var i = 0; i < $scope.visibleData.length; i++)
-                          $scope.visibleData[i].selected = false;
-                       $scope.visibleData[$scope.lastSelectIndex].selected == true;
                     }
                  };
 
@@ -248,6 +252,46 @@ angular.module("rectNG", [])
                     }
                  };
 
+                 /* EXTERNAL EVENTS ----------------------------------------- */
+
+                $scope.$on('rectngSelectRow', function(event, index){
+                  if (index < 0 || index >= $scope.visibleData.length)
+                    return;
+
+                  $scope.lastSelectIndex = index;
+
+                  for (var i = 0; i < $scope.visibleData.length; i++)
+                      $scope.visibleData[i].selected = false;
+                  $scope.visibleData[index].selected = true;
+
+                  // Set the new selection on the parent's variable
+                  if ($attrs.selectedRows && $attrs.selectedRows != "") {
+                     var tmp = $scope.cloneObj($scope.visibleData[$scope.lastSelectIndex]);
+                     delete tmp.selected; // don't return 'selected'
+                     $scope.$parent[$attrs.selectedRows] = [tmp];
+
+                     if(!$scope.$parent.$$phase)
+                       $scope.$parent.$digest();
+                  }
+
+                  if(!$scope.$parent.$$phase && !$scope.$$phase)
+                    $scope.$digest();
+                });
+
+                $scope.$on('rectngSelectAll', function(event, index){
+                  $scope.selectAll();
+
+                  if(!$scope.$parent.$$phase && !$scope.$$phase)
+                    $scope.$digest();
+                });
+
+                $scope.$on('rectngSelectNone', function(event, index){
+                  $scope.selectNone();
+
+                  if(!$scope.$parent.$$phase && !$scope.$$phase)
+                    $scope.$digest();
+                });
+
                  /* AUXILIARY FUNCTIONS ----------------------------------------- */
 
                  // Return a copy of the given object
@@ -259,7 +303,7 @@ angular.module("rectNG", [])
                        }
                     }
                     return target;
-                 }
+                 };
 
                  // Generic sort function by Triptych @ StackOverflow
                  // values.sort($scope.sortFunction('price', true, parseInt));
@@ -267,10 +311,10 @@ angular.module("rectNG", [])
                  $scope.sortFunction = function(field, reverse, compareFunction) {
                     var key = compareFunction ?
                             function(x) {
-                               return compareFunction(x[field])
+                               return compareFunction(x[field]);
                             } :
                             function(x) {
-                               return x[field]
+                               return x[field];
                             };
                     reverse = [-1, 1][+!!reverse];
 
@@ -286,7 +330,7 @@ angular.module("rectNG", [])
 
                        return reverse * ((a > b) - (b > a));
                     };
-                 }
+                 };
 
                  /* PARAMETER WATCHES ------------------------------------------- */
 

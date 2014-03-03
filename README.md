@@ -56,9 +56,18 @@ RectAngular JS allows users to select one or multiple rows by using the Shift, C
 
 	$scope.selectedMusicians = [];
 	
-And tell rect-ng to use your variable:
+And tell rect-ng to notify any changes to your variable:
 
 	<rectng data="musicians" columns="columns" selected-rows="selectedMusicians"></rectng>
+
+In order to manually select a row, from the scope containing the grid, do this:
+
+	$scope.$broadcast('rectngSelectRow', 0);  // This will select the first row
+	
+You can select and deselect all the rows as well
+
+	$scope.$broadcast('rectngSelectAll');
+	$scope.$broadcast('rectngSelectNone');
 	
 ##### Multiple row selection
 By default, the user can select more than one row at the same time.

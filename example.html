@@ -2,7 +2,7 @@
    <head>
       <title>rectNG</title>
       <meta charset="UTF-8">
-      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
       <style>
          body {
             font-family: "Helvetica Neue";
@@ -24,10 +24,17 @@
    
          /////////////////////////////////////
          // TEST CONTROLLER
-         function Testing($scope) {
+         function Testing1($scope) {
          
             $scope.tableWidth = "50%";
             $scope.tableHeight = "200px";
+
+            $scope.selectAll = function (){
+              $scope.$broadcast('rectngSelectAll');
+            };
+            $scope.selectNone = function (){
+              $scope.$broadcast('rectngSelectNone');
+            };
          
             // First grid
             $scope.musicians = [
@@ -75,14 +82,30 @@
                {id: 42, name: "Aretha", lname: "Franklyn", email: "user42@rect-ng.net"},
                {id: 43, name: "Donna", lname: "Summer", email: "user43@rect-ng.net"},
             ];
-            $scope.person = [{id: "id", title: "ID"}, 
-                            {id: "name", title: "Name", visible: true}, 
-                            {id: "lname", title: "Last Name", visible: true}, 
-                            {id: "email", title: "Email", visible: true}];
+
+            $scope.person = [{id: "id", title: "ID", visible: false}, 
+                            {id: "name", title: "Name"}, 
+                            {id: "lname", title: "Last Name"}, 
+                            {id: "email", title: "Email"}];
+
             $scope.selectedMusicians = [];
-            
+         }
+
+         function Testing2($scope) {
+         
+            $scope.tableWidth = "50%";
+            $scope.tableHeight = "200px";
+
+            $scope.selectAll = function (){
+              $scope.$broadcast('rectngSelectAll');
+            };
+            $scope.selectNone = function (){
+              $scope.$broadcast('rectngSelectNone');
+            };
+         
             // Second grid
             $scope.producers = [{name: "Bob", lname: "Clearmountain", genre: "Pop Rock"},
+                                {name: "George", lname: "Martin", genre: "Pop"},
                                 {name: "Rudy", lname: "Van Gelder", genre: "Jazz"},
                                 {name: "Eddie", lname: "Kramer", genre: "Pop Rock"},
                                 {name: "Chris Lord", lname: "Alge", genre: "Pop Rock"},
@@ -93,9 +116,11 @@
                                 {name: "Kevin", lname: "Killen", genre: "Pop"},
                                 {name: "Bernie", lname: "Kirsh", genre: "Jazz"},
                                 {name: "David", lname: "Pensado", genre: "Pop"}];
-            $scope.producer = [{id: "name", title: "Nom", visible: true},
-                               {id:"lname", title:"Cognoms", visible: true},
-                               {id:"genre", title:"Genre", visible: true}];
+
+            $scope.producer = [{id: "name", title: "Name"},
+                               {id:"lname", title:"Last Name"},
+                               {id:"genre", title:"Genre"}];
+
             $scope.selectedProducers = [];
          }
       </script>
@@ -105,16 +130,23 @@
    
       <!-- EXAMPLE GRIDS -->
    
-      <div id="test" ng-controller="Testing">
+      <div id="test" ng-controller="Testing1">
          <h3>20th century musicians</h3>
          <rectng columns="person" data="musicians" selected-rows="selectedMusicians" height="tableHeight" width="tableWidth"></rectng>
          <h4>Selection:</h4>
          <pre>$scope.selectedMusicians = {{selectedMusicians}}</pre>
          <br/>
+         <button ng-click="selectAll()">Select All</button>
+         <button ng-click="selectNone()">Select None</button>
+      </div>
+      <div id="test" ng-controller="Testing2">
          <h3>20th century producers</h3>
          <rectng columns="producer" data="producers" selected-rows="selectedProducers" height="tableHeight" width="tableWidth"></rectng>
          <h4>Selection:</h4>
          <pre>$scope.selectedProducers = {{selectedProducers}}</pre>
+         <br/>
+         <button ng-click="selectAll()">Select All</button>
+         <button ng-click="selectNone()">Select None</button>
       </div>
    
    </body>
