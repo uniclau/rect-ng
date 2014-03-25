@@ -33,16 +33,19 @@ Add **rectNG** as a dependency of your Angular application.
 ##### Provide some data
 
 	$scope.musicians = [
-       {id: 1, name: "Jay", lname: "Kay", email: "user1@rect-ng.net"},
-       {id: 2, name: "Herbie", lname: "Hancock", email: "user2@rect-ng.net"},
-        /* ... */ ];
+		{id: 1, name: "Jay", lname: "Kay", email: "user1@rect-ng.net"},
+		{id: 2, name: "Herbie", lname: "Hancock", email: "user2@rect-ng.net"},
+		// ...
+	];
 
 ##### Define what to display
 
-	$scope.columns = [{id: "id", title: "ID", visible: false}, 
-       {id: "name", title: "Name", visible: true}, 
-       {id: "lname", title: "Last Name", visible: true}, 
-       {id: "email", title: "Email", visible: true}];
+	$scope.columns = [
+		{id: "id", title: "ID", visible: false}, 
+		{id: "name", title: "Name", visible: true}, 
+		{id: "lname", title: "Last Name", visible: true}, 
+		{id: "email", title: "Email", visible: true}
+	];
       
 ##### Add the table to your DOM
 
@@ -75,12 +78,11 @@ By default, the user can select more than one row at the same time.
 	<rectng data="musicians" columns="columns"></rectng>
 	<rectng data="musicians" columns="columns" multiselect="true"></rectng>
 
-The two tables above sholud behave identically.
+The two tables above should behave identically.
 
 And of course, you can limit selection to just one row by doing this:
 
 	<rectng data="musicians" columns="columns" multiselect="false"></rectng>
-		
 	
 ##### Filtering
 To display only rows matching a given filter, define a variable in your $scope:
@@ -92,6 +94,7 @@ Tell rectNG to use it.
 	<rectng data="musicians" columns="columns" filter="currentFilter"></rectng>
 	
 Bind the value of an input HTML element to a variable in your scope and see what happens when you type a filter.
+
 ##### Grid dimensions
 To give your grid a precise size, define two variables in your scope:
 	
@@ -108,10 +111,10 @@ Instead of using scope variables, you can also specify fixed dimensions from the
 
 	<rectng data="musicians" columns="columns" height="'300px'" width="'50%'"></rectng>
 
-Look at the file **[example.html](https://github.com/uniclau/rect-ng/blob/master/example.html)** to see it in action.
+Look at **[example.html](https://github.com/uniclau/rect-ng/blob/master/example.html)** to see it in action.
 
 ##### Paging
-RectNG features a pager by default. There is no need to pass any parameter. 
+RectAngular JS features a pager by default. There is no need to pass any parameter to have it working. 
 	
 ### Projected features
 RectAngular JS is not yet complete. These are just some of the features that we'd like to implement.
