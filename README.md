@@ -75,7 +75,7 @@ By default, the user can select more than one row at the same time.
 	<rectng data="musicians" columns="columns"></rectng>
 	<rectng data="musicians" columns="columns" multiselect="true"></rectng>
 
-The last two tables shoud behave identically.
+The two tables above sholud behave identically.
 
 And of course, you can limit selection to just one row by doing this:
 
@@ -92,11 +92,11 @@ Tell rectNG to use it.
 	<rectng data="musicians" columns="columns" filter="currentFilter"></rectng>
 	
 Bind the value of an input HTML element to a variable in your scope and see what happens when you type a filter.
-##### Sizing
+##### Grid dimensions
 To give your grid a precise size, define two variables in your scope:
 	
 	$scope.tableWidth = "50%";
-    $scope.tableHeight = "200px";
+    $scope.tableHeight = "300px";
 
 Both percentage and pixel units are supported.
 
@@ -104,12 +104,18 @@ Tell rect-ng to use them to resize itself.
 
 	<rectng data="musicians" columns="columns" height="tableHeight" width="tableWidth"></rectng>
 	
+Instead of using scope variables, you can also specify fixed dimensions from the dom. Just surround the desired value with quotation marks '...' so that it is interpreted as a javascript string:
+
+	<rectng data="musicians" columns="columns" height="'300px'" width="'50%'"></rectng>
+
 Look at the file **[example.html](https://github.com/uniclau/rect-ng/blob/master/example.html)** to see it in action.
+
+##### Paging
+RectNG features a pager by default. There is no need to pass any parameter. 
 	
 ### Projected features
 RectAngular JS is not yet complete. These are just some of the features that we'd like to implement.
 
-* Paging
 * Column resizing
 * Column reordering
 * Column hide/show box
