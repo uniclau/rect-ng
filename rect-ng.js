@@ -218,6 +218,10 @@ angular.module("rectNG", [])
 				tmp = (tmp + 1) % $scope.availableItemsPerPage.length;
 				$scope.itemsPerPage = $scope.availableItemsPerPage[tmp];
 
+				var npages = $scope.countPages();
+				if(parseInt($scope.currentPage) > npages)
+					$scope.currentPage = npages;
+
 				$scope.updateVisibleData();
 			};
 
