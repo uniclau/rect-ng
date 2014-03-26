@@ -13,9 +13,10 @@ angular.module("rectNG", [])
 			$scope.visibleData = [];
 			$scope.visibleModel = [];
 			$scope.multiselect = true;
+			$scope.showPager = true;
 			$scope.currentPage = 1;
 			$scope.availableItemsPerPage = [25, 50, 100, 200, 500];
-			$scope.itemsPerPage = 50;
+			$scope.itemsPerPage = 100;
 			$scope.showPageInputBox = false;
 
 			/* EVENT HANDLING ---------------------------------------------- */
@@ -495,6 +496,14 @@ angular.module("rectNG", [])
 				$scope.multiselect = ($attrs.multiselect == undefined || $attrs.multiselect == "true");
 			});
 
+			// Watch the pager flag
+			$scope.$watch($attrs.pager, function() {
+				$scope.showPager = ($attrs.pager == undefined || $attrs.pager == "true");
+
+				if(!$scope.showPager)
+					$scope.itemsPerPage = 10000000000000; // A ridiculous amount that we will never reach
+			});
+
 			// Watch the height variable
 			$scope.$watch($attrs.height, function() {
 				$scope.$parent.$watch($attrs.height, function() {
@@ -516,11 +525,11 @@ angular.module("rectNG", [])
 		template: '<div>\
 		<style>\
 		.rectNG {margin: 0; padding: 0 0 79px; display: block; outline: none; user-select: none; -ms-user-select: none; -moz-user-select: none; -webkit-user-select: none;}\
-		/* Header */\
+		\/* Header *\/ \
 		.rectNG > div.rectNG-head {display: table;width: 100%;border-bottom: 2px solid #ccc;}\
 		.rectNG > div.rectNG-head > div:first-child {display: table-row;height: 38px;cursor: pointer;}\
 		.rectNG-title {display: table-cell;color:#555;font-size: 16px;font-weight: bold;vertical-align: middle;padding: 3px 6px;}\
-		/* Body */\
+		\/* Body *\/ \
 		.rectNG > .rectNG-body {width: 100%;height: 100%;overflow: auto;display: block;}\
 		.rectNG > .rectNG-body > .rectNG-inner{display: table;width: 100%;}\
 		.rectNG-inner > .rectNG-row {display: table-row;width: 100%;height: 33px;cursor: pointer;}\
@@ -528,7 +537,7 @@ angular.module("rectNG", [])
 		.rectNG-inner > .rectNG-row:nth-child(2n+1) {background-color: #f9f9f9;}\
 		.rectNG-inner > .rectNG-row:hover {background-color: #eee;}\
 		.rectNG-row > .rectNG-cell {display: table-cell;vertical-align: middle;padding: 3px 6px;}\
-		/* Footer */\
+		\/* Footer *\/ \
 		.rectNG > .rectNG-footer {width: 100%; height: 35px; border-top: 2px solid #ccc;}\
 		.rectNG > .rectNG-footer > .rectNG-pager {float: right; padding-top: 12px;}\
 		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-page {display:table-cell;}\
@@ -538,12 +547,12 @@ angular.module("rectNG", [])
 		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-entries {display:table-cell;}\
 		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-entries > span {margin-right: 20px; padding: 4px 20px; background-color: #f9f9f9;cursor: pointer;}\
 		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-entries > span:hover {background-color: #ddd;}\
-		/* Selected */\
+		\/* Selected *\/ \
 		div.rectNG-row.rectNG-selected {background-color: #ddd !important;}\
 		</style>\
 		\
 		\
-		<div class="rectNG" tabindex="10000" style="width: {{width}}; height: {{height}};" ng-init="init()" ng-keydown="onKey($event)">\
+		<div class="rectNG" tabindex="10000" style="width: {{width}}; height: {{height}}; padding: {{showPager ? \'0 0 79px\' : \'0 0 44px\'}}; " ng-init="init()" ng-keydown="onKey($event)">\
 			<div class="rectNG-head">\
 				<div>\
 					<div class="rectNG-title" ng-repeat="c in visibleModel" style="width: {{columnWidth()}};" ng-click="sortBy($index)">{{c.title}} <span ng-show="lastSortIndex==$index && sortAscending">&darr;</span><span ng-show="lastSortIndex==$index && !sortAscending">&uarr;</span></div>\
@@ -556,7 +565,7 @@ angular.module("rectNG", [])
 					</div>\
 				</div>\
 			</div>\
-			<div class="rectNG-footer">\
+			<div class="rectNG-footer" ng-show="showPager">\
 				<div class="rectNG-pager">\
 					<div class="rectNG-entries"><span class="arrow" ng-click="toggleItemsPerPage()">{{itemsPerPage}}</span></div>\
 					<div class="rectNG-page"><span class="arrow" ng-click="prevPage()">&larr;</span></div>\

@@ -114,7 +114,16 @@ Instead of using scope variables, you can also specify fixed dimensions from the
 Look at **[example.html](https://github.com/uniclau/rect-ng/blob/master/example.html)** to see it in action.
 
 ##### Paging
-RectAngular JS features a pager by default. There is no need to pass any parameter to have it working. 
+RectAngular JS features a pager by default. 
+
+	<rectng data="musicians" columns="columns"></rectng>
+	<rectng data="musicians" columns="columns" pager="true"></rectng>
+
+The two tables above should behave identically.
+
+However, the grid below will hide the pager and will display all the rows.
+
+	<rectng data="musicians" columns="columns" pager="false"></rectng>
 	
 ### Projected features
 RectAngular JS is not yet complete. These are just some of the features that we'd like to implement.
