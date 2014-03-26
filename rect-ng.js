@@ -134,10 +134,11 @@ angular.module("rectNG", [])
 			$scope.updateVisibleData = function() {
 				$scope.visibleData = [];
 				var start = ($scope.currentPage-1) * $scope.itemsPerPage;
-				var len = $scope.itemsPerPage < $scope.data.length - start ? 
-								$scope.itemsPerPage : $scope.data.length - start;
 
 				if ($scope.filter == undefined || $scope.filter == "") {
+					var len = $scope.itemsPerPage < $scope.data.length - start ? 
+								$scope.itemsPerPage : $scope.data.length - start;
+					
 					// Show all rows
 					for (var i = 0; i < len; i++) {
 						$scope.visibleData.push($scope.data[start+i]);
@@ -163,6 +164,9 @@ angular.module("rectNG", [])
 						}
 					}
 					// Actually displayed elements
+					var len = $scope.itemsPerPage < tempList.length - start ? 
+								$scope.itemsPerPage : tempList.length - start;
+								
 					for(var i = 0; i < len; i++) {
 						$scope.visibleData.push(tempList[start+i]);
 					}
@@ -175,11 +179,18 @@ angular.module("rectNG", [])
 				} 
 				else {
 					// Only rows matching the filter
+					var rowContent;
+					var tempList = [];
 					var counter = 0;
 
 					// Filter elements
 					var pattern = new RegExp($scope.filter, "i");
 					for (var i = 0; i < $scope.data.length; i++) {
+						rowContent = "";
+						for (var j = 0; j < $scope.columns.length; j++) {
+							rowContent += $scope.data[i][$scope.columns[j].id] + " ";
+						}
+
 						if (pattern.test(rowContent)) {
 							counter++;
 						}
