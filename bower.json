@@ -1,0 +1,26 @@
+{
+  "name": "rectng",
+  "version": "0.2.1",
+  "authors": [
+    "Jordi Moraleda <moraleda@uniclau.com>"
+  ],
+  "description": "A no frills compact Grid for Angular JS",
+  "main": "rect-ng.js",
+  "keywords": [
+    "rectng",
+    "rectangularjs",
+    "rectangular",
+    "rect",
+    "grid",
+    "angular"
+  ],
+  "license": "LGPL3",
+  "homepage": "http://www.uniclau.com/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
