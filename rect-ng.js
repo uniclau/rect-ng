@@ -304,7 +304,7 @@ angular.module("rectNG", [])
 				$scope.lastSelectIndex = 0;
 			};
 
-			$scope.keyUp = function() {
+			$scope.keyUp = function(e) {
 				if ($scope.lastSelectIndex > 0)
 					$scope.lastSelectIndex--;
 				else
@@ -314,6 +314,16 @@ angular.module("rectNG", [])
 					$scope.visibleData[i].selected = false;
 				$scope.visibleData[$scope.lastSelectIndex].selected = true;
 
+				// Scroll if we need to
+				var currentTop = 0;
+				var gBody = e.target.querySelector('.rectNG-body');
+				var gRows = gBody.querySelectorAll('.rectNG-row');
+				for(var i = 0; i < $scope.lastSelectIndex && i < gRows.length; i++) {
+					currentTop += gRows[i].offsetHeight;
+				}
+				if(currentTop < gBody.scrollTop)
+					gBody.scrollTop = currentTop;
+
 				// Set the new selection on the parent's variable 
 				if ($attrs.selectedRows && $attrs.selectedRows != "") {
 					var tmp = $scope.cloneObj($scope.visibleData[$scope.lastSelectIndex]);
@@ -322,7 +332,7 @@ angular.module("rectNG", [])
 				}
 			};
 
-			$scope.keyDown = function() {
+			$scope.keyDown = function(e) {
 				if ($scope.lastSelectIndex < $scope.visibleData.length - 1)
 					$scope.lastSelectIndex++;
 				else
@@ -331,6 +341,17 @@ angular.module("rectNG", [])
 				for (var i = 0; i < $scope.visibleData.length; i++)
 					$scope.visibleData[i].selected = false;
 				$scope.visibleData[$scope.lastSelectIndex].selected = true;
+
+				// Scroll if we need to
+				var currentTop = 0, lastHeight = 0;
+				var gBody = e.target.querySelector('.rectNG-body');
+				var gRows = gBody.querySelectorAll('.rectNG-row');
+				for(var i = 0; i <= $scope.lastSelectIndex && i < gRows.length; i++) {
+					currentTop += gRows[i].offsetHeight;
+					lastHeight = gRows[i].offsetHeight;
+				}
+				if(currentTop >= gBody.scrollTop + gBody.offsetHeight)
+					gBody.scrollTop = currentTop - gBody.offsetHeight;
 
 				// Set the new selection on the parent's variable
 				if ($attrs.selectedRows && $attrs.selectedRows != "") {
@@ -349,16 +370,16 @@ angular.module("rectNG", [])
 
 				// CTRL + A / CMD + A => Select All
 				if ((e.metaKey && e.keyCode == 65) || ((e.ctrlKey && e.keyCode65))) {
-					$scope.selectAll();
 					e.preventDefault();
+					$scope.selectAll();
 				}
 				else if (e.keyCode == 38) { // KEY UP
 					e.preventDefault();
-					$scope.keyUp();
+					$scope.keyUp(e);
 				}
 				else if (e.keyCode == 40) { // KEY DOWN
 					e.preventDefault();
-					$scope.keyDown();
+					$scope.keyDown(e);
 				}
 			};
 
