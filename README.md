@@ -1,138 +1,188 @@
-rect-ng
-=======
+# Rect-NG
 
-RectAngular JS is a no frills compact Grid for Angular JS. 
+Rect-NG is a no frills compact table for Angular JS.
 
-rect-ng is gently inspired by **[ng-grid](http://angular-ui.github.io/ng-grid/)**. However, not everybody needs a very complex grid to display data tables all of the time.
+The component is available in two versions:
 
-As I was spending much more time on tweaking and "undoing" stuff that was doing what I didn't want to, I decided to start a simple yet elegant alternative from scratch.
+*   Raw HTML and CSS version
+*   Bootstrap tables version
 
-### Overview
+## Overview
 
-RectAngular JS is designed with these goals in mind:
+Rect-NG is designed with these goals in mind:
 
-* All-in-one JS file. Period.
-* Dependency-Free.
-* Small footprint.
-* Simple to integrate.
-* Code easy to understand (hence customizable)
+*   All-in-one JS file
+*   Small footprint
+*   Easy to integrate
+*   Easy to understand (customize it if you want)
 
-### Getting started
-Integrating rect-ng in your angular application can't be simpler.
+## Getting started
 
-##### Include the JS file
-	
-      <script src="rect-ng.js"></script>
+### Raw HTML/CSS
 
-##### Tell angular to use it
+The obvious dependency in this case, is Angular JS. Make sure that your project already includes it.
 
-Add **rectNG** as a dependency of your Angular application.
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
 
-	var app = angular.module("test", ['rectNG']);
+Then, include Rect-NG itself:
 
-##### Provide some data
+      <script src="rect-ng.min.js"></script>
 
-	$scope.musicians = [
-		{id: 1, name: "Jay", lname: "Kay", email: "user1@rect-ng.net"},
-		{id: 2, name: "Herbie", lname: "Hancock", email: "user2@rect-ng.net"},
-		// ...
-	];
+### Bootstrap version
 
-##### Define what to display
+In this case, make sure that you also include Bootstrap (and the JQuery dependency as well):
 
-	$scope.columns = [
-		{id: "id", title: "ID", visible: false}, 
-		{id: "name", title: "Name", visible: true}, 
-		{id: "lname", title: "Last Name", visible: true}, 
-		{id: "email", title: "Email", visible: true}
-	];
-      
-##### Add the table to your DOM
+      <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+      <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
 
-	<rectng data="musicians" columns="columns"></rectng>
-	
-### More options
+Then, include the bootstrap version of Rect-NG:
 
-##### Row selection
+      <script src="rect-ng-bootstrap.min.js"></script>
 
-RectAngular JS allows users to select one or multiple rows by using the Shift, Ctrl and Meta keys. To get the currently selected rows, declare an empty array:
+### Tell Angular to use it
 
-	$scope.selectedMusicians = [];
-	
-And tell rect-ng to notify any changes to your variable:
+Add `rectNG` as a dependency of your Angular application.
 
-	<rectng data="musicians" columns="columns" selected-rows="selectedMusicians"></rectng>
+    var app = angular.module("myApp", ['rectNG']);
 
-In order to manually select a row, from the scope containing the grid, do this:
+###Provide your data
 
-	$scope.$broadcast('rectngSelectRow', 0);  // This will select the first row
-	
+Put some content in a variable in your scope.
+
+    $scope.musicians = [
+        {id: 1, name: "Jay", lname: "Kay", email: "user1@rect-ng.net"},
+        {id: 2, name: "Herbie", lname: "Hancock", email: "user2@rect-ng.net"},
+        // ...
+    ];
+
+###Define the columns you want to display
+
+    $scope.columns = [
+        {id: "id", title: "ID", visible: false}, 
+        {id: "name", title: "Name"},         // by default, the columns you define are visible
+        {id: "lname", title: "Last Name"},
+        {id: "email", title: "Email"}
+    ];
+
+###Add the Rect-NG table in your Markup
+
+    <rectng data="musicians" columns="columns"></rectng>
+
+Et voilà! Your first table is ready:
+
+## Row selection
+
+Rect-NG allows users to select one or multiple rows by using the `Shift`, `Ctrl` or `Cmd` keys. `Cmd/Ctrl+A` will select all the items.
+
+To get the currently selected rows, declare an array:
+
+    $scope.selectedMusicians = [];
+
+And tell Rect-NG to notify any changes to your variable:
+
+    <rectng data="musicians" columns="columns" selected-rows="selectedMusicians"></rectng>
+
+If no variable is provided to `selected-rows="..."`, selection capabilities are disabled.
+
+## Programatically selecting
+
+In order to manually select a row, do this from your scope:
+
+    $scope.$broadcast('rectngSelectRow', 0);  // This will select the first row
+
 You can select and deselect all the rows as well
 
-	$scope.$broadcast('rectngSelectAll');
-	$scope.$broadcast('rectngSelectNone');
-	
-##### Multiple row selection
+    $scope.$broadcast('rectngSelectAll');
+    $scope.$broadcast('rectngSelectNone');
+
+## Multiple or single row selection
+
 By default, the user can select more than one row at the same time.
 
-	<rectng data="musicians" columns="columns"></rectng>
-	<rectng data="musicians" columns="columns" multiselect="true"></rectng>
+    <rectng data="musicians" columns="columns" selected-rows="selectedProducers"></rectng>
+    <rectng data="musicians" columns="columns" multiselect="true" selected-rows="selectedProducers"></rectng>
 
 The two tables above should behave identically.
 
 And of course, you can limit selection to just one row by doing this:
 
-	<rectng data="musicians" columns="columns" multiselect="false"></rectng>
-	
-##### Filtering
-To display only rows matching a given filter, define a variable in your $scope:
-	
-	$scope.currentfilter = "";
+    <rectng data="musicians" columns="columns" multiselect="false" selected-rows="selectedProducers"></rectng>
 
-Tell rectNG to use it.
+## Row filtering
 
-	<rectng data="musicians" columns="columns" filter="currentFilter"></rectng>
-	
-Bind the value of an input HTML element to a variable in your scope and see what happens when you type a filter.
+To display only the rows matching a given text, define a variable in your $scope:
 
-##### Grid dimensions
+    $scope.currentFilter = "";
+
+Bind the value of an HTML text box to the variable in your scope.
+
+    <input type="text" ng-model="currentFilter"/>
+
+Tell rectNG to use it and see what happens when you type a string.
+
+    <rectng data="musicians" columns="columns" filter="currentFilter"></rectng>
+
+## Grid dimensions
+
 To give your grid a precise size, define two variables in your scope:
-	
-	$scope.tableWidth = "50%";
+
+    $scope.tableWidth = "50%";
     $scope.tableHeight = "300px";
 
-Both percentage and pixel units are supported.
+Percentage and pixel units are supported.
 
-Tell rect-ng to use them to resize itself.
+Tell Rect-NG to use them to resize itself.
 
-	<rectng data="musicians" columns="columns" height="tableHeight" width="tableWidth"></rectng>
-	
-Instead of using scope variables, you can also specify fixed dimensions from the dom. Just surround the desired value with quotation marks '...' so that it is interpreted as a javascript string:
+    <rectng data="musicians" columns="columns" height="tableHeight" width="tableWidth"></rectng>
 
-	<rectng data="musicians" columns="columns" height="'300px'" width="'50%'"></rectng>
+Instead of using scope variables, you can also specify fixed dimensions from the dom. Just surround the desired value with quotation marks `'...'` so that it is interpreted as a javascript string:
 
-Look at **[example.html](https://github.com/uniclau/rect-ng/blob/master/example.html)** to see it in action.
+    <rectng data="musicians" columns="columns" height="'300px'" width="'50%'"></rectng>
 
-##### Paging
-RectAngular JS features a pager by default. 
+## Links
 
-	<rectng data="musicians" columns="columns"></rectng>
-	<rectng data="musicians" columns="columns" pager="true"></rectng>
+In a typical REST scenario, you want to provide a view listing all the items, and then allow to jump to an individual one. To achieve that, you need to provide links.
+
+If your data has the following structure:
+
+    $scope.list = [
+        {name: "John", lastname: "Marshall", profile: "http://www.twitter.com/user1"},
+        {name: "Mary", lastname: "Jones", profile: "http://www.twitter.com/user2"},
+        // ...
+    ];
+
+We can tell Rect-NG to use the `profile`field as the href source to link to.
+
+    <rect-ng data="musicians" columns="columns" href-field="profile" selected-rows="selectedProducers"></rect-ng>
+
+This will draw a table with rows linking to their respective profile.
+
+Note that it is still possible to select items, independently of wether text links are enabled or not.
+
+## Paging
+
+Rect-NG features a pager by default.
+
+    <rectng data="musicians" columns="columns"></rectng>
+    <rectng data="musicians" columns="columns" pager="true"></rectng>
 
 The two tables above should behave identically.
 
-However, the grid below will hide the pager and will display all the rows.
+However, the grid below will hide the pager and display all the rows.
 
-	<rectng data="musicians" columns="columns" pager="false"></rectng>
-	
-### Projected features
-RectAngular JS is not yet complete. These are just some of the features that we'd like to implement.
+    <rectng data="musicians" columns="columns" pager="false"></rectng>
 
-* Column resizing
-* Column reordering
-* Column hide/show box
-* Color customization
+## Projected features
 
-Meanwhile, feel free to contribute with your own changes, always keeping it **small**, **simple**, **easily customizable** and **dependency-free**.
+Rect-NG is not yet completed. These are just some of the features that we'd like to implement.
+
+*   Column resizing
+*   Column reordering
+*   Column hide/show box
+*   Color customization
+
+If you want, feel free to contribute to the project, just keeping it **small**, **simple**, **easily customizable** and **dependency-free**.
 
 Thanks for reading!
