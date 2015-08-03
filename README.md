@@ -74,8 +74,6 @@ Put some content in a variable in your scope.
 
 Et voilà! Your first table is ready.
 
-<iframe src="embed1.html" style="width: 100%; height: 530px; border: none; overflow-x: hidden;"></iframe>
-
 ## Row selection
 
 Rect-NG allows users to select one or multiple rows by using the `Shift`, `Ctrl` or `Cmd` keys. `Cmd/Ctrl+A` will select all the items.
@@ -180,14 +178,7 @@ However, the grid below will hide the pager and display all the rows.
 
 ## Working examples
 
-See it working on the [project page](http://uniclau.github.io/rect-ng/) or refer to these demos:
-
-* [Example 1](http://uniclau.github.io/rect-ng/embed1.html)
-* [Example 2](http://uniclau.github.io/rect-ng/embed2.html)
-* [Example 3](http://uniclau.github.io/rect-ng/embed3.html)
-* [Example 4](http://uniclau.github.io/rect-ng/embed4.html)
-* [Example 5](http://uniclau.github.io/rect-ng/embed5.html)
-* [Example 6](http://uniclau.github.io/rect-ng/embed6.html)
+See it working on the project page: [http://uniclau.github.io/rect-ng/](http://uniclau.github.io/rect-ng/)
 
 ## Projected features
 
