@@ -6,7 +6,7 @@ gulp.task('default', function() {
   var ngAnnotate = require('gulp-ng-annotate');
   var uglify = require('gulp-uglify');
 
-  var p = gulp.src(['rect-ng*.js'])
+  var p = gulp.src(['rect-ng.js', 'rect-ng-bootstrap.js'])
     .pipe(ngAnnotate())
     .pipe(uglify())
     .pipe(rename({ suffix: '.min' }))
