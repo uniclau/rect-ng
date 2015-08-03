@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-us" ng-app="embed1">
+  <head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" media="screen">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <style>
+      html {
+        overflow-x: hidden; 
+      }
+      pre {
+        overflow-y: scroll;
+        /*height: 100px;*/
+      }
+    </style>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="rect-ng.bootstrap.js"></script>
+    <script type="text/javascript">
+      var app = angular.module("embed1", ['rectNG']);
+      app.controller('EmbedCtrl', function($scope){
+
+        // Second grid
+        $scope.producers = [{name: "Bob", lname: "Clearmountain", genre: "Pop Rock", twitter: "http://twitter.com/angularjs"},
+                            {name: "George", lname: "Martin", genre: "Pop", twitter: "http://twitter.com/angularjs"},
+                            {name: "Rudy", lname: "Van Gelder", genre: "Jazz", twitter: "http://twitter.com/angularjs"},
+                            {name: "Eddie", lname: "Kramer", genre: "Pop Rock", twitter: "http://twitter.com/angularjs"},
+                            {name: "Chris Lord", lname: "Alge", genre: "Pop Rock", twitter: "http://twitter.com/angularjs"},
+                            {name: "Joe", lname: "Chiccarelli", genre: "Pop", twitter: "http://twitter.com/angularjs"},
+                            {name: "Jon", lname: "Gass", genre: "Pop", twitter: "http://twitter.com/angularjs"},
+                            {name: "Don", lname: "Hahn", genre: "Orchestral", twitter: "http://twitter.com/angularjs"},
+                            {name: "Andy", lname: "Johns", genre: "Pop Rock", twitter: "http://twitter.com/angularjs"},
+                            {name: "Kevin", lname: "Killen", genre: "Pop", twitter: "http://twitter.com/angularjs"},
+                            {name: "Bernie", lname: "Kirsh", genre: "Jazz", twitter: "http://twitter.com/angularjs"},
+                            {name: "David", lname: "Pensado", genre: "Pop", twitter: "http://twitter.com/angularjs"}];
+
+        $scope.producer = [{id: "name", title: "Name"},
+                           {id:"lname", title:"Last Name"},
+                           {id:"genre", title:"Genre"}];
+
+        $scope.selectedProducers = [];
+      });
+    </script>
+  </head>
+  <body ng-controller="EmbedCtrl">
+    <h4>Links example</h4>
+    <rectng columns="producer" data="producers" selected-rows="selectedProducers" href-field="twitter" height="'300px'"></rectng>
+  </body>
+</html>
+

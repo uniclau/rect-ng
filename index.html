@@ -5,14 +5,22 @@
     <title>Rect-NG by uniclau</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <style>
+    .main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
+      color: #225D94 !important;
+    }
+    .highlight {
+      background-color: rgba(255, 255, 0, 0.55);
+    }
+    </style>
   </head>
   <body>
     <section class="page-header">
       <h1 class="project-name">Rect-NG</h1>
-      <h2 class="project-tagline">Rect-NG is a no frills compact Grid for Angular JS</h2>
+      <h2 class="project-tagline">Compact table component for Angular JS projects</h2>
       <a href="https://github.com/uniclau/rect-ng" class="btn">View on GitHub</a>
       <a href="https://github.com/uniclau/rect-ng/zipball/master" class="btn">Download .zip</a>
       <a href="https://github.com/uniclau/rect-ng/tarball/master" class="btn">Download .tar.gz</a>
@@ -20,48 +28,67 @@
 
     <section class="main-content">
       <h1>
-<a id="rect-ng" class="anchor" href="#rect-ng" aria-hidden="true"><span class="octicon octicon-link"></span></a>rect-ng</h1>
+<a id="rect-ng" class="anchor" href="#rect-ng" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rect-NG</h1>
 
-<p>RectAngular JS is a no frills compact Grid for Angular JS. </p>
-
-<p>rect-ng is gently inspired by <strong><a href="http://angular-ui.github.io/ng-grid/">ng-grid</a></strong>. However, not everybody needs a very complex grid to display data tables all of the time.</p>
-
-<p>As I was spending much more time on tweaking and "undoing" stuff that was doing what I didn't want to, I decided to start a simple yet elegant alternative from scratch.</p>
-
-<h3>
-<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h3>
-
-<p>RectAngular JS is designed with these goals in mind:</p>
-
+<p>Rect-NG is a no frills compact table for Angular JS.</p>
+<p>The component is available in two versions:</p>
 <ul>
-<li>All-in-one JS file. Period.</li>
-<li>Dependency-Free.</li>
-<li>Small footprint.</li>
-<li>Simple to integrate.</li>
-<li>Code easy to understand (hence customizable)</li>
+  <li>Raw HTML and CSS version</li>
+  <li>Bootstrap tables version</li>
 </ul>
 
+<h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
+
+<p>Rect-NG is designed with these goals in mind:</p>
+
+<ul>
+<li>All-in-one JS file</li>
+<li>Small footprint</li>
+<li>Easy to integrate</li>
+<li>Easy to understand (customize it if you want)</li>
+</ul>
+
+<h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting started</h2>
+
+<h3>Raw HTML/CSS</h3>
+<p>The obvious dependency in this case, is Angular JS. Make sure that your project already includes it.</p>
+
+<pre><code>  &lt;script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<p>Then, include Rect-NG itself:</p>
+
+<pre><code>  &lt;script src="rect-ng.min.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<h3>Bootstrap version</h3>
+<p>In this case, make sure that you also include Bootstrap (and the JQuery dependency as well):</p>
+
+<pre><code>  &lt;link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"&gt;
+  &lt;script src="https://code.jquery.com/jquery-2.1.1.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<p>Then, include the bootstrap version of Rect-NG:</p>
+
+<pre><code>  &lt;script src="rect-ng.bootstrap.min.js"&gt;&lt;/script&gt;
+</code></pre>
+
 <h3>
-<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting started</h3>
+<a id="tell-angular-to-use-it" class="anchor" href="#tell-angular-to-use-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tell Angular to use it</h3>
 
-<p>Integrating rect-ng in your angular application can't be simpler.</p>
+<p>Add <code>rectNG</code> as a dependency of your Angular application.</p>
 
-<h5>
-<a id="include-the-js-file" class="anchor" href="#include-the-js-file" aria-hidden="true"><span class="octicon octicon-link"></span></a>Include the JS file</h5>
-
-<pre><code>  &lt;script src="rect-ng.js"&gt;&lt;/script&gt;
+<pre><code>var app = angular.module("myApp", [<span class="highlight">'rectNG'</span>]);
 </code></pre>
 
-<h5>
-<a id="tell-angular-to-use-it" class="anchor" href="#tell-angular-to-use-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tell angular to use it</h5>
+<h3>
+<a id="provide-your-data" class="anchor" href="#provide-your-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Provide your data</h3>
 
-<p>Add <strong>rectNG</strong> as a dependency of your Angular application.</p>
-
-<pre><code>var app = angular.module("test", ['rectNG']);
-</code></pre>
-
-<h5>
-<a id="provide-some-data" class="anchor" href="#provide-some-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Provide some data</h5>
+<p>Put some content in a variable in your scope.</p>
 
 <pre><code>$scope.musicians = [
     {id: 1, name: "Jay", lname: "Kay", email: "user1@rect-ng.net"},
@@ -70,40 +97,49 @@
 ];
 </code></pre>
 
-<h5>
-<a id="define-what-to-display" class="anchor" href="#define-what-to-display" aria-hidden="true"><span class="octicon octicon-link"></span></a>Define what to display</h5>
+<h3>
+<a id="define-what-to-display" class="anchor" href="#define-what-to-display" aria-hidden="true"><span class="octicon octicon-link"></span></a>Define the columns you want to display</h3>
 
 <pre><code>$scope.columns = [
     {id: "id", title: "ID", visible: false}, 
-    {id: "name", title: "Name", visible: true}, 
-    {id: "lname", title: "Last Name", visible: true}, 
-    {id: "email", title: "Email", visible: true}
+    {id: "name", title: "Name"},         // by default, the columns you define are visible
+    {id: "lname", title: "Last Name"},
+    {id: "email", title: "Email"}
 ];
 </code></pre>
 
-<h5>
-<a id="add-the-table-to-your-dom" class="anchor" href="#add-the-table-to-your-dom" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add the table to your DOM</h5>
+<h3>
+<a id="add-the-table-to-your-dom" class="anchor" href="#add-the-table-to-your-dom" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add the Rect-NG table in your Markup</h3>
 
-<pre><code>&lt;rectng data="musicians" columns="columns"&gt;&lt;/rectng&gt;
+<pre><code>&lt;<span class="highlight">rectng</span> data="musicians" columns="columns"&gt;&lt;/rectng&gt;
 </code></pre>
 
-<h3>
-<a id="more-options" class="anchor" href="#more-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>More options</h3>
+<p>Et voilà! Your first table is ready:</p>
 
-<h5>
-<a id="row-selection" class="anchor" href="#row-selection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Row selection</h5>
+<iframe src="embed1.html" style="width: 100%; height: 530px; border: none; overflow-x: hidden;"></iframe>
 
-<p>RectAngular JS allows users to select one or multiple rows by using the Shift, Ctrl and Meta keys. To get the currently selected rows, declare an empty array:</p>
+<h2>
+<a id="row-selection" class="anchor" href="#row-selection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Row selection</h2>
+
+<p>Rect-NG allows users to select one or multiple rows by using the <code>Shift</code>, <code>Ctrl</code> or <code>Cmd</code> keys. <code>Cmd/Ctrl+A</code> will select all the items.</p>
+
+<p>To get the currently selected rows, declare an array:</p>
 
 <pre><code>$scope.selectedMusicians = [];
 </code></pre>
 
-<p>And tell rect-ng to notify any changes to your variable:</p>
+<p>And tell Rect-NG to notify any changes to your variable:</p>
 
-<pre><code>&lt;rectng data="musicians" columns="columns" selected-rows="selectedMusicians"&gt;&lt;/rectng&gt;
+<pre><code>&lt;rectng data="musicians" columns="columns" <span class="highlight">selected-rows="selectedMusicians"</span>&gt;&lt;/rectng&gt;
 </code></pre>
 
-<p>In order to manually select a row, from the scope containing the grid, do this:</p>
+<iframe src="embed2.html" style="width: 100%; height: 580px; border: none; overflow-x: hidden;"></iframe>
+
+<p>If no variable is provided to <code>selected-rows="..."</code>, selection capabilities are disabled. </p>
+
+<h2>
+<a id="programatically-selecting" class="anchor" href="#programatically-selecting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Programatically selecting</h2>
+<p>In order to manually select a row, do this from your scope:</p>
 
 <pre><code>$scope.$broadcast('rectngSelectRow', 0);  // This will select the first row
 </code></pre>
@@ -114,39 +150,48 @@
 $scope.$broadcast('rectngSelectNone');
 </code></pre>
 
-<h5>
-<a id="multiple-row-selection" class="anchor" href="#multiple-row-selection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Multiple row selection</h5>
+<iframe src="embed3.html" style="width: 100%; height: 620px; border: none; overflow-x: hidden;"></iframe>
+
+<h2>
+<a id="multiple-row-selection" class="anchor" href="#multiple-row-selection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Multiple or single row selection</h2>
 
 <p>By default, the user can select more than one row at the same time.</p>
 
-<pre><code>&lt;rectng data="musicians" columns="columns"&gt;&lt;/rectng&gt;
-&lt;rectng data="musicians" columns="columns" multiselect="true"&gt;&lt;/rectng&gt;
+<pre><code>&lt;rectng data="musicians" columns="columns" selected-rows="selectedProducers"&gt;&lt;/rectng&gt;
+&lt;rectng data="musicians" columns="columns" <span class="highlight">multiselect="true"</span> selected-rows="selectedProducers"&gt;&lt;/rectng&gt;
 </code></pre>
 
 <p>The two tables above should behave identically.</p>
 
 <p>And of course, you can limit selection to just one row by doing this:</p>
 
-<pre><code>&lt;rectng data="musicians" columns="columns" multiselect="false"&gt;&lt;/rectng&gt;
+<pre><code>&lt;rectng data="musicians" columns="columns" <span class="highlight">multiselect="false"</span> selected-rows="selectedProducers"&gt;&lt;/rectng&gt;
 </code></pre>
 
-<h5>
-<a id="filtering" class="anchor" href="#filtering" aria-hidden="true"><span class="octicon octicon-link"></span></a>Filtering</h5>
+<iframe src="embed4.html" style="width: 100%; height: 570px; border: none; overflow-x: hidden;"></iframe>
 
-<p>To display only rows matching a given filter, define a variable in your $scope:</p>
+<h2>
+<a id="filtering" class="anchor" href="#filtering" aria-hidden="true"><span class="octicon octicon-link"></span></a>Row filtering</h2>
 
-<pre><code>$scope.currentfilter = "";
+<p>To display only the rows matching a given text, define a variable in your $scope:</p>
+
+<pre><code>$scope.currentFilter = "";
 </code></pre>
 
-<p>Tell rectNG to use it.</p>
+<p>Bind the value of an HTML text box to the variable in your scope.</p>
 
-<pre><code>&lt;rectng data="musicians" columns="columns" filter="currentFilter"&gt;&lt;/rectng&gt;
+<pre><code>&lt;input type="text" ng-model="currentFilter"/&gt;
 </code></pre>
 
-<p>Bind the value of an input HTML element to a variable in your scope and see what happens when you type a filter.</p>
+<p>Tell rectNG to use it and see what happens when you type a string.</p>
 
-<h5>
-<a id="grid-dimensions" class="anchor" href="#grid-dimensions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Grid dimensions</h5>
+<pre><code>&lt;rectng data="musicians" columns="columns" <span class="highlight">filter="currentFilter"</span>&gt;&lt;/rectng&gt;
+</code></pre>
+
+<iframe src="embed5.html" style="width: 100%; height: 470px; border: none; overflow-x: hidden;"></iframe>
+
+<h2>
+<a id="grid-dimensions" class="anchor" href="#grid-dimensions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Grid dimensions</h2>
 
 <p>To give your grid a precise size, define two variables in your scope:</p>
 
@@ -154,40 +199,63 @@ $scope.$broadcast('rectngSelectNone');
 $scope.tableHeight = "300px";
 </code></pre>
 
-<p>Both percentage and pixel units are supported.</p>
+<p>Percentage and pixel units are supported.</p>
 
-<p>Tell rect-ng to use them to resize itself.</p>
+<p>Tell Rect-NG to use them to resize itself.</p>
 
-<pre><code>&lt;rectng data="musicians" columns="columns" height="tableHeight" width="tableWidth"&gt;&lt;/rectng&gt;
+<pre><code>&lt;rectng data="musicians" columns="columns" <span class="highlight">height="tableHeight" width="tableWidth"</span>&gt;&lt;/rectng&gt;
 </code></pre>
 
-<p>Instead of using scope variables, you can also specify fixed dimensions from the dom. Just surround the desired value with quotation marks '...' so that it is interpreted as a javascript string:</p>
+<p>Instead of using scope variables, you can also specify fixed dimensions from the dom. Just surround the desired value with quotation marks <code>'...'</code> so that it is interpreted as a javascript string:</p>
 
-<pre><code>&lt;rectng data="musicians" columns="columns" height="'300px'" width="'50%'"&gt;&lt;/rectng&gt;
+<pre><code>&lt;rectng data="musicians" columns="columns" <span class="highlight">height="'300px'" width="'50%'"</span>&gt;&lt;/rectng&gt;
 </code></pre>
 
-<p>Look at <strong><a href="https://github.com/uniclau/rect-ng/blob/master/example.html">example.html</a></strong> to see it in action.</p>
+<h2>
+<a id="links" class="anchor" href="#links" aria-hidden="true"><span class="octicon octicon-link"></span></a>Links</h2>
 
-<h5>
-<a id="paging" class="anchor" href="#paging" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paging</h5>
+<p>In a typical REST scenario, you want to provide a view listing all the items, and then allow to jump to an individual one. To achieve that, you need to provide links.</p>
 
-<p>RectAngular JS features a pager by default. </p>
+<p>If your data has the following structure:</p>
+
+<pre><code>$scope.list = [
+    {name: "John", lastname: "Marshall", <span class="highlight">profile: "http://www.twitter.com/user1"</span>},
+    {name: "Mary", lastname: "Jones", <span class="highlight">profile: "http://www.twitter.com/user2"</span>},
+    // ...
+];
+</code></pre>
+
+<p>We can tell Rect-NG to use the <code>profile</code>field as the href source to link to. </p>
+
+<pre><code>&lt;rect-ng data="musicians" columns="columns" <span class="highlight">href-field="profile"</span> selected-rows="selectedProducers"&gt;&lt;/rect-ng&gt;
+</code></pre>
+
+<p>This will draw a table with rows linking to their respective profile. </p>
+
+<iframe src="embed6.html" style="width: 100%; height: 470px; border: none; overflow-x: hidden;"></iframe>
+
+<p>Note that it is still possible to select items, independently of wether text links are enabled or not. </p>
+
+<h2>
+<a id="paging" class="anchor" href="#paging" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paging</h2>
+
+<p>Rect-NG features a pager by default. </p>
 
 <pre><code>&lt;rectng data="musicians" columns="columns"&gt;&lt;/rectng&gt;
-&lt;rectng data="musicians" columns="columns" pager="true"&gt;&lt;/rectng&gt;
+&lt;rectng data="musicians" columns="columns" <span class="highlight">pager="true"</span>&gt;&lt;/rectng&gt;
 </code></pre>
 
 <p>The two tables above should behave identically.</p>
 
-<p>However, the grid below will hide the pager and will display all the rows.</p>
+<p>However, the grid below will hide the pager and display all the rows.</p>
 
-<pre><code>&lt;rectng data="musicians" columns="columns" pager="false"&gt;&lt;/rectng&gt;
+<pre><code>&lt;rectng data="musicians" columns="columns" <span class="highlight">pager="false"</span>&gt;&lt;/rectng&gt;
 </code></pre>
 
-<h3>
-<a id="projected-features" class="anchor" href="#projected-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Projected features</h3>
+<h2>
+<a id="projected-features" class="anchor" href="#projected-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Projected features</h2>
 
-<p>RectAngular JS is not yet complete. These are just some of the features that we'd like to implement.</p>
+<p>Rect-NG is not yet completed. These are just some of the features that we'd like to implement.</p>
 
 <ul>
 <li>Column resizing</li>
@@ -196,7 +264,7 @@ $scope.tableHeight = "300px";
 <li>Color customization</li>
 </ul>
 
-<p>Meanwhile, feel free to contribute with your own changes, always keeping it <strong>small</strong>, <strong>simple</strong>, <strong>easily customizable</strong> and <strong>dependency-free</strong>.</p>
+<p>If you want, feel free to contribute to the project, just keeping it <strong>small</strong>, <strong>simple</strong>, <strong>easily customizable</strong> and <strong>dependency-free</strong>.</p>
 
 <p>Thanks for reading!</p>
 
@@ -211,3 +279,4 @@ $scope.tableHeight = "300px";
   
   </body>
 </html>
+

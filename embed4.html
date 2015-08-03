@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en-us" ng-app="embed1">
+  <head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" media="screen">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <style>
+      html {
+        overflow-x: hidden; 
+      }
+      pre {
+        overflow-y: scroll;
+        /*height: 100px;*/
+      }
+    </style>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="rect-ng.bootstrap.js"></script>
+    <script type="text/javascript">
+      var app = angular.module("embed1", ['rectNG']);
+      app.controller('EmbedCtrl', function($scope){
+
+        // Second grid
+        $scope.producers = [{name: "Bob", lname: "Clearmountain", genre: "Pop Rock"},
+                            {name: "George", lname: "Martin", genre: "Pop"},
+                            {name: "Rudy", lname: "Van Gelder", genre: "Jazz"},
+                            {name: "Eddie", lname: "Kramer", genre: "Pop Rock"},
+                            {name: "Chris Lord", lname: "Alge", genre: "Pop Rock"},
+                            {name: "Joe", lname: "Chiccarelli", genre: "Pop"},
+                            {name: "Jon", lname: "Gass", genre: "Pop"},
+                            {name: "Don", lname: "Hahn", genre: "Orchestral"},
+                            {name: "Andy", lname: "Johns", genre: "Pop Rock"},
+                            {name: "Kevin", lname: "Killen", genre: "Pop"},
+                            {name: "Bernie", lname: "Kirsh", genre: "Jazz"},
+                            {name: "David", lname: "Pensado", genre: "Pop"}];
+
+        $scope.producer = [{id: "name", title: "Name"},
+                           {id:"lname", title:"Last Name"},
+                           {id:"genre", title:"Genre"}];
+
+        $scope.selectedProducers = [];
+      });
+    </script>
+  </head>
+  <body ng-controller="EmbedCtrl">
+    <h4>Single selection example</h4>
+    <rectng columns="producer" data="producers" selected-rows="selectedProducers" multiselect="false" height="'300px'"></rectng>
+    <br/>
+    <h4>Selection:</h4>
+    <pre>$scope.selectedProducers = {{selectedProducers}}</pre>
+  </body>
+</html>
+

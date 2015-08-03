@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-us" ng-app="embed1">
+  <head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" media="screen">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <style>
+      html {
+        overflow-x: hidden; 
+      }
+      pre {
+        overflow-y: scroll;
+        /*height: 100px;*/
+      }
+    </style>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="rect-ng.bootstrap.js"></script>
+    <script type="text/javascript">
+      var app = angular.module("embed1", ['rectNG']);
+      app.controller('EmbedCtrl', function($scope){
+
+        // First grid
+        var id = 0;
+        $scope.musicians = [
+           {id: ++id, name: "James", lname: "Brown", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Herbie", lname: "Hancock", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Miles", lname: "Davis", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Bill", lname: "Evans", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Wayne", lname: "Shorter", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Jaco", lname: "Pastorius", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "John", lname: "Scofield", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Joe", lname: "Henderson", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Jack", lname: "DeJohnette", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "John", lname: "Coltrane", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Pat", lname: "Metheny", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Dave", lname: "Holland", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Keith", lname: "Jarret", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Roger", lname: "Waters", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "David", lname: "Gilmour", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Syd", lname: "Barret", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Richard", lname: "Wright", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Nick", lname: "Mason", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Bob", lname: "Klose", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "John", lname: "Lennon", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Paul", lname: "McCartney", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "George", lname: "Harrisson", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Ringo", lname: "Starr", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Robert", lname: "Plant", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Jimmy", lname: "Page", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "John Paul", lname: "Jones", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "John", lname: "Bonham", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Kurt", lname: "Cobain", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Julian", lname: "Casablancas", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Jay", lname: "Kay", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Jimi", lname: "Hendrix", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Freddie", lname: "Mercury", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Cat", lname: "Stevens", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Xavier", lname: "Cugat", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Antonio Carlos", lname: "Jobim", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "João", lname: "Gilberto", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Sergio", lname: "Mendes", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Astrud", lname: "Gilberto", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Stan", lname: "Getz", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Pat", lname: "Martino", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Tito", lname: "Puente", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Quincy", lname: "Jones", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Henry", lname: "Mancini", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Aretha", lname: "Franklyn", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+           {id: ++id, name: "Donna", lname: "Summer", email: "musician" + id + "@rect-ng.net", link: "#" + id},
+        ];
+
+        $scope.person = [{id: "id", title: "ID", visible: false}, 
+                        {id: "name", title: "Name"}, 
+                        {id: "lname", title: "Last Name"}, 
+                        {id: "email", title: "Email"}];
+
+        $scope.currentFilter = "";
+      });
+    </script>
+  </head>
+  <body ng-controller="EmbedCtrl">
+    <h4>
+      Search example
+      <label class="pull-right" style="font-size: 14px;">
+        Search musicians: &nbsp;<input type="text" ng-model="currentFilter" style="font-weight: normal;"/>
+      </label>
+    </h4>
+    <rectng columns="person" data="musicians" height="'300px'" filter="currentFilter"></rectng>
+  </body>
+</html>
+
