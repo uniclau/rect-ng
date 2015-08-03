@@ -16,6 +16,8 @@ Rect-NG is designed with these goals in mind:
 *   Easy to integrate
 *   Easy to understand (customize it if you want)
 
+Check the [project page](http://uniclau.github.io/rect-ng/) for live demos.
+
 ## Getting started
 
 ### Raw HTML/CSS
@@ -70,7 +72,7 @@ Put some content in a variable in your scope.
 
     <rectng data="musicians" columns="columns"></rectng>
 
-Et voilà! Your first table is ready:
+Et voilà! Your first table is ready.
 
 ## Row selection
 
@@ -173,6 +175,17 @@ The two tables above should behave identically.
 However, the grid below will hide the pager and display all the rows.
 
     <rectng data="musicians" columns="columns" pager="false"></rectng>
+
+## Working examples
+
+See it working on the [project page](http://uniclau.github.io/rect-ng/) or refer to these demos:
+
+* [Example 1](http://uniclau.github.io/rect-ng/embed1.html)
+* [Example 2](http://uniclau.github.io/rect-ng/embed2.html)
+* [Example 3](http://uniclau.github.io/rect-ng/embed3.html)
+* [Example 4](http://uniclau.github.io/rect-ng/embed4.html)
+* [Example 5](http://uniclau.github.io/rect-ng/embed5.html)
+* [Example 6](http://uniclau.github.io/rect-ng/embed6.html)
 
 ## Projected features
 
