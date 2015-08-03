@@ -74,6 +74,8 @@ Put some content in a variable in your scope.
 
 Et voilà! Your first table is ready.
 
+<iframe src="embed1.html" style="width: 100%; height: 530px; border: none; overflow-x: hidden;"></iframe>
+
 ## Row selection
 
 Rect-NG allows users to select one or multiple rows by using the `Shift`, `Ctrl` or `Cmd` keys. `Cmd/Ctrl+A` will select all the items.
