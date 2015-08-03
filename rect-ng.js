@@ -18,38 +18,40 @@ angular.module("rectNG", [])
 			$scope.availableItemsPerPage = [25, 50, 100, 200, 500];
 			$scope.itemsPerPage = 100;
 			$scope.showPageInputBox = false;
+			$scope.useSelection = !!$attrs.selectedRows;
+			$scope.hrefField = $attrs.hrefField;
 
 			/* EVENT HANDLING ---------------------------------------------- */
 
 			// ROW SELECTION HANDLING
 			$scope.cellClick = function(index, event) {
+				if(!$scope.useSelection) return;
 
+				var selected = [], tmp, i;
 				// Single selection
 				if ($scope.multiselect == undefined || $scope.multiselect == false) {
-					for (var i = 0; i < $scope.visibleData.length; i++) {
+					for (i = 0; i < $scope.visibleData.length; i++) {
 						$scope.visibleData[i].selected = false;
 					}
 					$scope.visibleData[index].selected = true;
 					$scope.lastSelectIndex = index;
 
 					// Update the parent's selected rows variable
-					var selected = [], tmp;
 					tmp = $scope.cloneObj($scope.visibleData[index]); // don't return 'selected'
 					delete tmp.selected;
 					selected.push(tmp);
 
-					if ($attrs.selectedRows && $attrs.selectedRows != "")
+					if ($attrs.selectedRows)
 						$scope.$parent[$attrs.selectedRows] = [$scope.visibleData[index]];
 					return;
 				}
 
 				// Multiple selection
-				var selected = [], tmp;
 
 				// Range selection
 				if (event.shiftKey) {
 					if ($scope.lastSelectIndex == -1) { // 0 => A
-						for (var i = 0; i < $scope.visibleData.length; i++) {
+						for (i = 0; i < $scope.visibleData.length; i++) {
 							$scope.visibleData[i].selected = false;
 						}
 						$scope.visibleData[index].selected = true;
@@ -58,7 +60,7 @@ angular.module("rectNG", [])
 						selected.push(tmp);
 					}
 					else if (index > $scope.lastSelectIndex) { // A => B
-						for (var i = $scope.lastSelectIndex; i <= index; i++) {
+						for (i = $scope.lastSelectIndex; i <= index; i++) {
 							$scope.visibleData[i].selected = true;
 							tmp = $scope.cloneObj($scope.visibleData[i]); // don't return 'selected'
 							delete tmp.selected;
@@ -66,7 +68,7 @@ angular.module("rectNG", [])
 						}
 					} 
 					else { // B <= A
-						for (var i = index; i <= $scope.lastSelectIndex; i++) {
+						for (i = index; i <= $scope.lastSelectIndex; i++) {
 							$scope.visibleData[i].selected = true;
 							tmp = $scope.cloneObj($scope.visibleData[i]); // don't return 'selected'
 							delete tmp.selected;
@@ -78,7 +80,7 @@ angular.module("rectNG", [])
 				else if (event.ctrlKey || event.metaKey) {
 					$scope.visibleData[index].selected = !$scope.visibleData[index].selected;
 
-					for (var i = 0; i < $scope.visibleData.length; i++) {
+					for (i = 0; i < $scope.visibleData.length; i++) {
 						if ($scope.visibleData[i].selected) {
 							tmp = $scope.cloneObj($scope.visibleData[i]); // don't return 'selected'
 							delete tmp.selected;
@@ -88,7 +90,7 @@ angular.module("rectNG", [])
 				// Select only one
 				}
 				else {
-					for (var i = 0; i < $scope.visibleData.length; i++) {
+					for (i = 0; i < $scope.visibleData.length; i++) {
 						$scope.visibleData[i].selected = false;
 					}
 					$scope.visibleData[index].selected = true;
@@ -99,7 +101,7 @@ angular.module("rectNG", [])
 				$scope.lastSelectIndex = index;
 
 				// Update the parent's selected rows variable
-				if ($attrs.selectedRows && $attrs.selectedRows != "") {
+				if ($attrs.selectedRows) {
 					$scope.$parent[$attrs.selectedRows] = selected;
 				}
 			};
@@ -133,6 +135,7 @@ angular.module("rectNG", [])
 			// UPDATE THE VISIBLE ROWS
 			$scope.updateVisibleData = function() {
 				$scope.visibleData = [];
+				var i;
 				var start = ($scope.currentPage-1) * $scope.itemsPerPage;
 
 				if ($scope.filter == undefined || $scope.filter == "") {
@@ -140,7 +143,7 @@ angular.module("rectNG", [])
 								$scope.itemsPerPage : $scope.data.length - start;
 					
 					// Show all rows
-					for (var i = 0; i < len; i++) {
+					for (i = 0; i < len; i++) {
 						$scope.visibleData.push($scope.data[start+i]);
 					}
 				}
@@ -150,7 +153,7 @@ angular.module("rectNG", [])
 
 					// Filter elements
 					var pattern = new RegExp($scope.filter, "i");
-					for (var i = 0; i < $scope.data.length; i++) {
+					for (i = 0; i < $scope.data.length; i++) {
 						var rowContent = "";
 						for (var j = 0; j < $scope.columns.length; j++) {
 							rowContent += $scope.data[i][$scope.columns[j].id] + " ";
@@ -167,14 +170,14 @@ angular.module("rectNG", [])
 					var len = $scope.itemsPerPage < tempList.length - start ? 
 								$scope.itemsPerPage : tempList.length - start;
 								
-					for(var i = 0; i < len; i++) {
+					for(i = 0; i < len; i++) {
 						$scope.visibleData.push(tempList[start+i]);
 					}
 				}
 			};
 
 			$scope.countVisibleEntries = function(){
-				if ($scope.filter == undefined || $scope.filter == "") {
+				if (!$scope.filter) {
 					return $scope.data.length;
 				} 
 				else {
@@ -237,19 +240,8 @@ angular.module("rectNG", [])
 				$scope.updateVisibleData();
 			};
 
-			$scope.toggleGotoPage = function(e) {
-				if(e && e.type == "click") {
-					$scope.showPageInputBox = true;
-
-					setTimeout(function(){
-						e.target.parentNode.querySelector('input').focus();
-
-						setTimeout(function(){
-							e.target.parentNode.querySelector('input').select();
-						}, 50);
-					}, 50);
-				}
-				else if((e && e.type == "keydown" && e.keyCode == 13) || (e && e.type == "blur")) {
+			$scope.gotoPage = function(e) {
+				if((e && e.type == "keydown" && e.keyCode == 13) || (e && e.type == "blur")) {
 					e.preventDefault();
 					$scope.showPageInputBox = false;
 
@@ -259,7 +251,7 @@ angular.module("rectNG", [])
 					else if(parseInt($scope.currentPage) < 1)
 						$scope.currentPage = 1;
 					else
-						$scope.currentPage = parseInt($scope.currentPage);
+						$scope.currentPage = parseInt($scope.currentPage) || 1;
 
 					$scope.updateVisibleData();
 				}
@@ -269,10 +261,10 @@ angular.module("rectNG", [])
 				if(!$scope.multiselect)
 					return;
 
-				var selected = [], tmp;
+				var i, selected = [], tmp;
 				// Prompt the parent scope with the new selection
-				if ($attrs.selectedRows && $attrs.selectedRows != "") {
-					for (var i = 0; i < $scope.visibleData.length; i++) {
+				if ($attrs.selectedRows) {
+					for (i = 0; i < $scope.visibleData.length; i++) {
 						$scope.visibleData[i].selected = true;
 						tmp = $scope.cloneObj($scope.visibleData[i]);
 						delete tmp.selected; // don't return 'selected'
@@ -282,7 +274,7 @@ angular.module("rectNG", [])
 					$scope.$parent[$attrs.selectedRows] = selected;
 				}
 				else {
-					for (var i = 0; i < $scope.visibleData.length; i++)
+					for (i = 0; i < $scope.visibleData.length; i++)
 						$scope.visibleData[i].selected = true;
 				}
 
@@ -297,7 +289,7 @@ angular.module("rectNG", [])
 					$scope.visibleData[i].selected = false;
 				}
 				// Set the new selection on the parent's variable
-				if ($attrs.selectedRows && $attrs.selectedRows != "") {
+				if ($attrs.selectedRows) {
 					$scope.$parent[$attrs.selectedRows] = [];
 				}
 
@@ -305,12 +297,13 @@ angular.module("rectNG", [])
 			};
 
 			$scope.keyUp = function(e) {
+				var i;
 				if ($scope.lastSelectIndex > 0)
 					$scope.lastSelectIndex--;
 				else
 					$scope.lastSelectIndex = 0;
 
-				for (var i = 0; i < $scope.visibleData.length; i++)
+				for (i = 0; i < $scope.visibleData.length; i++)
 					$scope.visibleData[i].selected = false;
 				$scope.visibleData[$scope.lastSelectIndex].selected = true;
 
@@ -318,14 +311,14 @@ angular.module("rectNG", [])
 				var currentTop = 0;
 				var gBody = e.target.querySelector('.rectNG-body');
 				var gRows = gBody.querySelectorAll('.rectNG-row');
-				for(var i = 0; i < $scope.lastSelectIndex && i < gRows.length; i++) {
+				for(i = 0; i < $scope.lastSelectIndex && i < gRows.length; i++) {
 					currentTop += gRows[i].offsetHeight;
 				}
 				if(currentTop < gBody.scrollTop)
 					gBody.scrollTop = currentTop;
 
 				// Set the new selection on the parent's variable 
-				if ($attrs.selectedRows && $attrs.selectedRows != "") {
+				if ($attrs.selectedRows) {
 					var tmp = $scope.cloneObj($scope.visibleData[$scope.lastSelectIndex]);
 					delete tmp.selected; // don't return 'selected'
 					$scope.$parent[$attrs.selectedRows] = [tmp];
@@ -333,12 +326,13 @@ angular.module("rectNG", [])
 			};
 
 			$scope.keyDown = function(e) {
+				var i;
 				if ($scope.lastSelectIndex < $scope.visibleData.length - 1)
 					$scope.lastSelectIndex++;
 				else
 					$scope.lastSelectIndex = $scope.visibleData.length - 1;
 
-				for (var i = 0; i < $scope.visibleData.length; i++)
+				for (i = 0; i < $scope.visibleData.length; i++)
 					$scope.visibleData[i].selected = false;
 				$scope.visibleData[$scope.lastSelectIndex].selected = true;
 
@@ -346,7 +340,7 @@ angular.module("rectNG", [])
 				var currentTop = 0, lastHeight = 0;
 				var gBody = e.target.querySelector('.rectNG-body');
 				var gRows = gBody.querySelectorAll('.rectNG-row');
-				for(var i = 0; i <= $scope.lastSelectIndex && i < gRows.length; i++) {
+				for(i = 0; i <= $scope.lastSelectIndex && i < gRows.length; i++) {
 					currentTop += gRows[i].offsetHeight;
 					lastHeight = gRows[i].offsetHeight;
 				}
@@ -354,7 +348,7 @@ angular.module("rectNG", [])
 					gBody.scrollTop = currentTop - gBody.offsetHeight;
 
 				// Set the new selection on the parent's variable
-				if ($attrs.selectedRows && $attrs.selectedRows != "") {
+				if ($attrs.selectedRows) {
 					var tmp = $scope.cloneObj($scope.visibleData[$scope.lastSelectIndex]);
 					delete tmp.selected; // don't return 'selected'
 					$scope.$parent[$attrs.selectedRows] = [tmp];
@@ -391,14 +385,15 @@ angular.module("rectNG", [])
 			};
 
 			// DEFAULT COLUMN WIDTH
-			$scope.columnWidth = function() {
-				if ($scope.width.indexOf("%") > 0)
+			$scope.getColumnWidth = function() {
+				if (!$scope.width || $scope.width.indexOf("%") > 0)
 					return (100.0 / $scope.visibleModel.length) + "%";
 				else {
 					var width = parseFloat($scope.width);
 					return (width / $scope.visibleModel.length) + "px";
 				}
 			};
+			$scope.columnWidth = $scope.getColumnWidth();
 
 			/* EXTERNAL EVENTS ----------------------------------------- */
 
@@ -525,12 +520,12 @@ angular.module("rectNG", [])
 
 			// Watch the multiselection flag
 			$scope.$watch($attrs.multiselect, function() {
-				$scope.multiselect = ($attrs.multiselect == undefined || $attrs.multiselect == "true");
+				$scope.multiselect = ($attrs.multiselect === undefined || $attrs.multiselect == "true");
 			});
 
 			// Watch the pager flag
 			$scope.$watch($attrs.pager, function() {
-				$scope.showPager = ($attrs.pager == undefined || $attrs.pager == "true");
+				$scope.showPager = ($attrs.pager === undefined || $attrs.pager == "true");
 
 				if(!$scope.showPager)
 					$scope.itemsPerPage = 10000000000000; // A ridiculous amount that we will never reach
@@ -550,65 +545,70 @@ angular.module("rectNG", [])
 					$scope.width = $scope.$parent.$eval($attrs.width) || $scope.width;
 				});
 				$scope.width = $scope.$parent.$eval($attrs.width) || $scope.width;
+				$scope.columnWidth = $scope.getColumnWidth();
 			});
 		},
 		// Not ideal, but in order to keep everything packaged into a single file,
 		// the CSS code is also embedded in the template
-		template: '<div>\
-		<style>\
-		.rectNG {margin: 0; padding: 0 0 79px; display: block; outline: none; user-select: none; -ms-user-select: none; -moz-user-select: none; -webkit-user-select: none;}\
-		\/* Header *\/ \
-		.rectNG > div.rectNG-head {display: table;width: 100%;border-bottom: 2px solid #ccc;}\
-		.rectNG > div.rectNG-head > div:first-child {display: table-row;height: 38px;cursor: pointer;}\
-		.rectNG-title {display: table-cell;color:#555;font-size: 16px;font-weight: bold;vertical-align: middle;padding: 3px 6px;}\
-		\/* Body *\/ \
-		.rectNG > .rectNG-body {width: 100%;height: 100%;overflow: auto;display: block;}\
-		.rectNG > .rectNG-body > .rectNG-inner{display: table;width: 100%;}\
-		.rectNG-inner > .rectNG-row {display: table-row;width: 100%;height: 33px;cursor: pointer;}\
-		.rectNG-inner > .rectNG-row:nth-child(2n) {background-color: #fefefe;}\
-		.rectNG-inner > .rectNG-row:nth-child(2n+1) {background-color: #f9f9f9;}\
-		.rectNG-inner > .rectNG-row:hover {background-color: #eee;}\
-		.rectNG-row > .rectNG-cell {display: table-cell;vertical-align: middle;padding: 3px 6px;}\
-		\/* Footer *\/ \
-		.rectNG > .rectNG-footer {width: 100%; height: 35px; border-top: 2px solid #ccc;}\
-		.rectNG > .rectNG-footer > .rectNG-pager {float: right; padding-top: 12px;}\
-		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-page {display:table-cell;}\
-		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-page > span {padding: 4px 8px; background-color: #f9f9f9;cursor: pointer;}\
-		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-page > span:hover {background-color: #ddd;}\
-		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-page > .rectNG-pageinput {width: 50px; height: 20px; margin: 0; border: 0; font-size: 14px; text-align: center; outline: none; user-select: none; -ms-user-select: none; -moz-user-select: none; -webkit-user-select: none;}\
-		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-entries {display:table-cell;}\
-		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-entries > span {margin-right: 20px; padding: 4px 20px; background-color: #f9f9f9;cursor: pointer;}\
-		.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-entries > span:hover {background-color: #ddd;}\
-		\/* Selected *\/ \
-		div.rectNG-row.rectNG-selected {background-color: #ddd !important;}\
-		</style>\
-		\
-		\
-		<div class="rectNG" tabindex="10000" style="width: {{width}}; height: {{height}}; padding: {{showPager ? \'0 0 79px\' : \'0 0 44px\'}}; " ng-init="init()" ng-keydown="onKey($event)">\
-			<div class="rectNG-head">\
-				<div>\
-					<div class="rectNG-title" ng-repeat="c in visibleModel" style="width: {{columnWidth()}};" ng-click="sortBy($index)">{{c.title}} <span ng-show="lastSortIndex==$index && sortAscending">&darr;</span><span ng-show="lastSortIndex==$index && !sortAscending">&uarr;</span></div>\
-				</div>\
-			</div>\
-			<div class="rectNG-body">\
-				<div class="rectNG-inner">\
-					<div class="rectNG-row" ng-repeat="row in visibleData" ng-click="cellClick($index, $event)" ng-class="isRowSelected($index)">\
-						<div class="rectNG-cell" ng-repeat="c in visibleModel" style="width: {{columnWidth()}};">{{row[c.id]}}</div>\
-					</div>\
-				</div>\
-			</div>\
-			<div class="rectNG-footer" ng-show="showPager">\
-				<div class="rectNG-pager">\
-					<div class="rectNG-entries"><span class="arrow" ng-click="toggleItemsPerPage()">{{itemsPerPage}}</span></div>\
-					<div class="rectNG-page"><span class="arrow" ng-click="prevPage()">&larr;</span></div>\
-					<div class="rectNG-page">\
-						<span ng-show="!showPageInputBox" ng-click="toggleGotoPage($event)">{{currentPage + \' / \' + countPages()}}</span>\
-						<input class="rectNG-pageinput" ng-show="showPageInputBox" ng-keydown="toggleGotoPage($event)" ng-blur="toggleGotoPage($event)" ng-model="currentPage" type="text"></input>\
-					</div>\
-					<div class="rectNG-page"><span class="arrow" ng-click="nextPage()">&rarr;</span></div>\
-				</div>\
-			</div>\
-		</div>',
+		template: [
+		'<div>',
+			'<style>',
+				'.rectNG {margin: 0; padding: 0 0 79px; display: block; outline: none; user-select: none; -ms-user-select: none; -moz-user-select: none; -webkit-user-select: none;}',
+				// HEADER
+				'.rectNG > div.rectNG-head {display: table;width: 100%;border-bottom: 2px solid #ccc;}',
+				'.rectNG > div.rectNG-head > div:first-child {display: table-row;height: 38px;cursor: pointer;}',
+				'.rectNG-title {display: table-cell;color:#555;font-size: 16px;font-weight: bold;vertical-align: middle;padding: 3px 6px;}',
+				// BODY
+				'.rectNG > .rectNG-body {width: 100%;height: 100%;overflow: auto;display: block;}',
+				'.rectNG > .rectNG-body > .rectNG-inner{display: table;width: 100%;}',
+				'.rectNG-inner > .rectNG-row {display: table-row;width: 100%;height: 33px;cursor: pointer;}',
+				'.rectNG-inner > .rectNG-row:nth-child(2n) {background-color: #fefefe;}',
+				'.rectNG-inner > .rectNG-row:nth-child(2n+1) {background-color: #f9f9f9;}',
+				'.rectNG-inner > .rectNG-row:hover {background-color: #eee;}',
+				'.rectNG-row > .rectNG-cell {display: table-cell;vertical-align: middle;padding: 3px 6px;}',
+				// FOOTER
+				'.rectNG > .rectNG-footer {width: 100%; height: 35px; border-top: 2px solid #ccc;}',
+				'.rectNG > .rectNG-footer > .rectNG-pager {float: right; padding-top: 12px;}',
+				'.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-page {display:table-cell;}',
+				'.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-page > span {padding: 4px 8px; background-color: #f9f9f9;cursor: pointer;}',
+				'.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-page > span:hover {background-color: #ddd;}',
+				'.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-page > .rectNG-pageinput {width: 50px; height: 20px; margin: 0; border: 0; font-size: 14px; text-align: center; outline: none; user-select: none; -ms-user-select: none; -moz-user-select: none; -webkit-user-select: none;}',
+				'.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-entries {display:table-cell;}',
+				'.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-entries > span {margin-right: 20px; padding: 4px 20px; background-color: #f9f9f9;cursor: pointer;}',
+				'.rectNG > .rectNG-footer > .rectNG-pager > .rectNG-entries > span:hover {background-color: #ddd;}',
+				// SELECTED
+				'div.rectNG-row.rectNG-selected {background-color: #ddd !important;}',
+			'</style>',
+
+			'<div class="rectNG" ng-init="init()" ng-keydown="onKey($event)" tabindex="10000" style="width: {{width}}; height: {{height}}; padding: {{showPager ? \'0 0 79px\' : \'0 0 44px\'}}; ">',
+				'<div class="rectNG-head">',
+					'<div>',
+						'<div class="rectNG-title" ng-repeat="c in visibleModel" style="width: {{columnWidth}};" ng-click="sortBy($index)">{{c.title}} <span ng-show="lastSortIndex==$index && sortAscending">&darr;</span><span ng-show="lastSortIndex==$index && !sortAscending">&uarr;</span></div>',
+					'</div>',
+				'</div>',
+				'<div class="rectNG-body">',
+					'<div class="rectNG-inner">',
+						'<div class="rectNG-row" ng-repeat="row in visibleData" ng-click="cellClick($index, $event)" ng-class="isRowSelected($index)">',
+							'<div class="rectNG-cell" ng-repeat="c in visibleModel" style="width: {{columnWidth}};">',
+								'<a ng-if="hrefField" ng-href="{{row[hrefField]}}">{{row[c.id]}}</a>',
+								'<span ng-if="!hrefField">{{row[c.id]}}</span>',
+							'</div>',
+						'</div>',
+					'</div>',
+				'</div>',
+				'<div class="rectNG-footer" ng-show="showPager">',
+					'<div class="rectNG-pager">',
+						'<div class="rectNG-entries"><span class="arrow" ng-click="toggleItemsPerPage()">{{itemsPerPage}}</span></div>',
+						'<div class="rectNG-page"><span class="arrow" ng-click="prevPage()">&larr;</span></div>',
+						'<div class="rectNG-page">',
+							'<span ng-show="!showPageInputBox" ng-click="gotoPage($event)">{{currentPage + \' / \' + countPages()}}</span>',
+							'<input class="rectNG-pageinput" ng-show="showPageInputBox" ng-keydown="gotoPage($event)" ng-blur="gotoPage($event)" ng-model="currentPage" type="text"></input>',
+						'</div>',
+						'<div class="rectNG-page"><span class="arrow" ng-click="nextPage()">&rarr;</span></div>',
+					'</div>',
+				'</div>',
+			'</div>',
+		'</div>'].join(''),
 		replace: true
 	};
 });
