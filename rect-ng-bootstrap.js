@@ -258,8 +258,7 @@ angular.module("rectNG", [])
 			};
 
 			$scope.selectAll = function() {
-				if(!$scope.multiselect)
-					return;
+				if(!$attrs.useSelection || !$scope.multiselect) return;
 
 				var i, selected = [], tmp;
 				// Prompt the parent scope with the new selection
@@ -282,8 +281,7 @@ angular.module("rectNG", [])
 			};
 
 			$scope.selectNone = function() {
-				if(!$scope.multiselect)
-					return;
+				if(!$scope.useSelection || !$scope.multiselect) return;
 
 				for (var i = 0; i < $scope.visibleData.length; i++) {
 					$scope.visibleData[i].selected = false;
