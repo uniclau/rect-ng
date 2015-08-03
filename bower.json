@@ -4,23 +4,27 @@
   "authors": [
     "Jordi Moraleda <moraleda@uniclau.com>"
   ],
-  "description": "A no frills compact Grid for Angular JS",
-  "main": "rect-ng.js",
+  "description": "Compact table component for Angular JS",
+  "dependencies": {
+    "angular": "~1.4.1"
+  },
+  "main": [
+    "rect-ng.min.js",
+    "rect-ng-bootstrap.min.js"
+  ],
   "keywords": [
+    "rect-ng",
     "rectng",
-    "rectangularjs",
     "rectangular",
     "rect",
     "grid",
     "angular"
   ],
   "license": "LGPL3",
-  "homepage": "http://www.uniclau.com/",
+  "homepage": "http://uniclau.github.io/rect-ng",
   "ignore": [
     "**/.*",
     "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "bower_components"
   ]
 }
