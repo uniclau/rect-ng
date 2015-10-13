@@ -28,6 +28,9 @@
    
       <script>
          var app = angular.module("example", ['rectNG']);
+         app.config(['$compileProvider', function ($compileProvider) {
+           $compileProvider.debugInfoEnabled(false); // disable debug info
+         }]);
          app.controller('MainCtrl', function($scope){
             var id = 0;
             $scope.musiciansData = [

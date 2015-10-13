@@ -15,8 +15,8 @@ angular.module("rectNG", [])
 			$scope.multiselect = true;
 			$scope.showPager = true;
 			$scope.currentPage = 1;
-			$scope.availableItemsPerPage = [25, 50, 100, 200, 500];
-			$scope.itemsPerPage = 100;
+			$scope.availableItemsPerPage = [50, 100, 500];
+			$scope.itemsPerPage = 50;
 			$scope.showPageInputBox = false;
 			$scope.useSelection = !!$attrs.selectedRows;
 			$scope.hrefField = $attrs.hrefField;
@@ -586,10 +586,10 @@ angular.module("rectNG", [])
 				'</div>',
 				'<div class="rectNG-body">',
 					'<div class="rectNG-inner">',
-						'<div class="rectNG-row" ng-repeat="row in visibleData" ng-click="cellClick($index, $event)" ng-class="isRowSelected($index)">',
+						'<div class="rectNG-row" ng-repeat="row in visibleData track by $index" ng-click="cellClick($index, $event)" ng-class="isRowSelected($index)">',
 							'<div class="rectNG-cell" ng-repeat="c in visibleModel" style="width: {{columnWidth}};">',
-								'<a ng-if="hrefField" ng-href="{{row[hrefField]}}">{{row[c.id]}}</a>',
-								'<span ng-if="!hrefField">{{row[c.id]}}</span>',
+								'<a ng-if="hrefField" ng-href="{{visibleData[$parent.$parent.$index][hrefField]}}">{{visibleData[$parent.$parent.$index][c.id]}}</a>',
+								'<span ng-if="!hrefField">{{visibleData[$parent.$parent.$index][c.id]}}</span>',
 							'</div>',
 						'</div>',
 					'</div>',
